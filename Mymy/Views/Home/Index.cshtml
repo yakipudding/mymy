@@ -1,0 +1,96 @@
+﻿@model Mymy.Models.HomeView
+@{
+    ViewBag.Title = "まいまい";
+}
+
+<h2>まいまい</h2>
+
+@foreach (var setting in Model.Settings)
+{
+    <p>
+        @Html.DisplayFor(modelItem => setting.Label) : @Html.DisplayFor(modelItem => setting.Memo)
+    </p>
+}
+<hr />
+
+@foreach (var projectTicket in Model.Projects)
+{
+<h4>
+    @Html.ActionLink(projectTicket.ProjectName, "Edit", new { id = projectTicket.ProjectId, controller = "Projects" })
+    　
+    @Html.ActionLink("新規チケット登録", "Create", new { projectId = projectTicket.ProjectId, controller = "Tickets" })
+</h4>
+
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().TracId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().Category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().Status2)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().Creator)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().Link2)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().Memo)
+            </th>
+            <th></th>
+        </tr>
+        @if (projectTicket.Tickets.Any())
+        {
+            foreach (var item in projectTicket.Tickets)
+            {
+                <tr>
+                    <td>
+                        <a href="@Html.DisplayFor(modelItem => item.Link)">
+                            @Html.DisplayFor(modelItem => item.TracId)
+                        </a>
+                    </td>
+                    <td>
+                        @Html.ActionLink(item.Title, "Edit", new { id = item.TicketId, controller = "Tickets" })
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Category)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Status)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Status2)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Creator)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Link2)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Memo)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Delete", "Delete", new { id = item.TicketId, controller = "Tickets" })
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+}
