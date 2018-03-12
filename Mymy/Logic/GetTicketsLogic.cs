@@ -6,6 +6,8 @@ using Mymy.Models;
 using Mymy.DAL;
 using System.Net;
 using System.Xml;
+using System.Data;
+using System.IO;
 
 namespace Mymy.Logic
 {
@@ -31,62 +33,101 @@ namespace Mymy.Logic
             {
                 var dbProjectTickets = project.Tickets.ToList();
 
-                //RSSから取得
-                if (project.RssUrl != null)
+                //CSVから取得
+                if (project.CsvUrl != null)
                 {
-                    var xml = GetXmlFromRSS(project.RssUrl);
-                    ConvertXmlToTickets(project, xml, dbProjectTickets); //ここでListに追加
+                    var data = GetDataFromCsv(project.CsvUrl);
+                    ConvertDataTableToTickets(project, data, dbProjectTickets); //ここでListに追加
                 }
 
                 //DBから取得（個人設定　プロジェクト登録分）
                 foreach (var dbProjectTicket in dbProjectTickets.FindAll(x => x.Visible))
                 {
-                    var containRss = Tickets.FirstOrDefault(x => x.TracId == dbProjectTicket.TracId);
-                    if (containRss == null)
+                    var containCsv = Tickets.FirstOrDefault(x => x.TracId == dbProjectTicket.TracId);
+                    if (containCsv == null)
                     {
-                        //RSSから最新情報取得
-                        //TODO RSSのURLをどう作るか
-                        string rssURL = project.RssTicketUrl + dbProjectTicket.TracId;
-                        var xml = GetXmlFromRSS(rssURL);
-                        Tickets.Add(UpdateTicketFromXml(dbProjectTicket, xml));
+                        //CSVから最新情報取得
+                        string CsvUrl = project.TicketUrl + dbProjectTicket.TracId + "?type=csv";
+                        var data = GetDataFromCsv(CsvUrl);
+                        Tickets.Add(UpdateTicketFromData(dbProjectTicket, data));
                     }
                 }
             }
-            
+
             //ファイルから取得（テスト用）
-            var xmlF = new XmlDocument();
-            xmlF.Load(@"C:\tmp\test.xml");
+            var testData = new DataTable();
+            var sr = new StreamReader(@"C:\tmp\test.csv", System.Text.Encoding.GetEncoding("shift_jis"));
+            var line = sr.ReadLine();
+            var headers = line.Split(',');
+
+            foreach (var head in headers)
+            {
+                testData.Columns.Add(head);
+            }
+            // ストリームの末尾まで繰り返す
+            while (!sr.EndOfStream)
+            {
+                string[] rows = sr.ReadLine().Split(',');
+                DataRow dr = testData.NewRow();
+                for (int i = 0; i < headers.Length; i++)
+                {
+                    dr[i] = rows[i];
+                }
+                testData.Rows.Add(dr);
+            }
             var testProject = DbProjects.FirstOrDefault(x => x.ProjectId == 1);
-            ConvertXmlToTickets(testProject, xmlF, testProject.Tickets.ToList());
+            ConvertDataTableToTickets(testProject, testData, testProject.Tickets.ToList());
 
             return;
         }
 
         /// <summary>
-        /// RSSから取得した情報をXMLに変換する
+        /// CSVから取得した情報をDataTableに変換する
         /// </summary>
-        /// <param name="rssUrl"></param>
+        /// <param name="csvUrl"></param>
         /// <returns></returns>
-        private XmlDocument GetXmlFromRSS(string rssUrl)
+        private DataTable GetDataFromCsv(string csvUrl)
         {
-            var xml = new XmlDocument();
+            var data = new DataTable();
 
-            if (!IsUseRSS) return xml;
+            if (!IsUseRSS) return data;
 
             try
             {
-                var request = HttpWebRequest.Create(rssUrl);
+                var request = HttpWebRequest.Create(csvUrl);
                 request.Method = "GET";
                 var response = (HttpWebResponse)request.GetResponse();
-                var stream = response.GetResponseStream();
-                xml.Load(stream);
+                using (var sr = new StreamReader(response.GetResponseStream()))
+                {
+                    // ファイルから一行読み込む
+                    var line = sr.ReadLine();
+                    // 読み込んだ一行をカンマ毎に分けて配列に格納する
+                    var headers = line.Split(',');
+
+                    foreach (var head in headers)
+                    {
+                        data.Columns.Add(head);
+                    }
+
+                    // ストリームの末尾まで繰り返す
+                    while (!sr.EndOfStream)
+                    {
+                        string[] rows = sr.ReadLine().Split(',');
+                        DataRow dr = data.NewRow();
+                        for (int i = 0; i < headers.Length; i++)
+                        {
+                            dr[i] = rows[i];
+                        }
+                        data.Rows.Add(dr);
+                    }
+                }
             }
             catch (Exception)
             {
                 throw;
             }
 
-            return xml;
+            return data;
         }
 
         /// <summary>
@@ -94,28 +135,35 @@ namespace Mymy.Logic
         /// </summary>
         /// <param name="projectId"></param>
         /// <param name="xml"></param>
-        private void ConvertXmlToTickets(Project project, XmlDocument xml, List<Ticket> dbProjectTicket)
+        private void ConvertDataTableToTickets(Project project, DataTable data, List<Ticket> dbProjectTicket)
         {
-            var nodelist = xml.SelectNodes(@"rss/channel/item");
-
-            foreach (XmlNode node in nodelist)
+            foreach (DataRow row in data.Rows)
             {
                 var ticket = new Ticket();
 
-                var link = node.SelectSingleNode(@"link").InnerText;
-                var title = node.SelectSingleNode(@"title").InnerText;
-                var date_str = node.SelectSingleNode(@"pubDate").InnerText;
-                var description = node.SelectSingleNode(@"description").InnerText;
-                var creator = (string)null; //, node.SelectSingleNode(@"creator").InnerText
-                
-                ticket.Project = project;
-                ticket.Link = link;
-                ticket.Title = title;
-                ticket.Date = DateTime.Parse(date_str);
-                ticket.Description = description;
-                ticket.Creator = creator;
+                var link = project.TicketUrl + row["id"];
+                var summary = row["summary"].ToString();
+                var repoter = row["repoter"].ToString();
+                var owner = row["owner"].ToString();
+                var createdate_str = row["time"].ToString();
+                var updatedate_str = row["changetime"].ToString();
 
-                ticket.TracId = Ticket.GetTracId(link);
+                var dueclosedate_str = row["due_close"].ToString(); //期日
+                var status = row["status2"].ToString();  //
+
+                ticket.Project = project;
+
+                ticket.Link = link;
+                ticket.Summary = summary;
+                ticket.Repoter = repoter;
+                ticket.Owner = owner;
+                ticket.CreateDate = DateTime.Parse(createdate_str);
+                ticket.UpdateDate = DateTime.Parse(updatedate_str);
+
+                ticket.DueCloseDate = DateTime.Parse(dueclosedate_str);
+                ticket.Status = status;
+
+                ticket.TracId = int.Parse(row["id"].ToString());
 
                 if (dbProjectTicket != null)
                 {
@@ -124,7 +172,6 @@ namespace Mymy.Logic
                     if (dbTicket != null)
                     {
                         ticket.Category = dbTicket.Category;
-                        ticket.Status = dbTicket.Status;
                         ticket.Status2 = dbTicket.Status2;
                         ticket.Link2 = dbTicket.Link2;
                         ticket.Memo = dbTicket.Memo;
@@ -155,16 +202,26 @@ namespace Mymy.Logic
         /// <param name="ticket"></param>
         /// <param name="xml"></param>
         /// <returns></returns>
-        private Ticket UpdateTicketFromXml(Ticket ticket, XmlDocument xml)
+        private Ticket UpdateTicketFromData(Ticket ticket, DataTable data)
         {
             if (!IsUseRSS) return ticket;
 
-            var node = xml.SelectSingleNode(@"rss/channel/item");
+            var row = data.Rows[0];
+            
+            var summary = row["summary"].ToString();
+            var owner = row["owner"].ToString();
+            var updatedate_str = row["changetime"].ToString();
 
-            ticket.Link = node.SelectSingleNode(@"link").InnerText;
-            ticket.Title = node.SelectSingleNode(@"title").InnerText;
-            ticket.Description = node.SelectSingleNode(@"description").InnerText;
-            ticket.TracId = Ticket.GetTracId(ticket.Link);
+            var dueclosedate_str = row["due_close"].ToString(); //期日
+            var status = row["status2"].ToString();  //
+            
+            ticket.Summary = summary;
+            ticket.Owner = owner;
+            ticket.UpdateDate = DateTime.Parse(updatedate_str);
+
+            ticket.DueCloseDate = DateTime.Parse(dueclosedate_str);
+            ticket.Status = status;
+            ticket.TracId = int.Parse(row["id"].ToString());
 
             return ticket;
 

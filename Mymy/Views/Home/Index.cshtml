@@ -27,7 +27,7 @@
                 @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().TracId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().Title)
+                @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().Summary)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().Category)
@@ -39,10 +39,10 @@
                 @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().Status2)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().Date)
+                @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().DueCloseDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().Creator)
+                @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().Repoter)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().Link2)
@@ -63,7 +63,7 @@
                         </a>
                     </td>
                     <td>
-                        @Html.ActionLink(item.Title, "Edit", new { id = item.TicketId, controller = "Tickets" })
+                        @Html.ActionLink(item.Summary, "Edit", new { id = item.TicketId, controller = "Tickets" })
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Category)
@@ -75,10 +75,10 @@
                         @Html.DisplayFor(modelItem => item.Status2)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Date)
+                        @Html.DisplayFor(modelItem => item.DueCloseDate)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Creator)
+                        @Html.DisplayFor(modelItem => item.Repoter)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Link2)

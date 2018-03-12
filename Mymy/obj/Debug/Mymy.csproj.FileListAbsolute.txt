@@ -101,3 +101,4 @@ C:\Users\hitomi\source\repos\Mymy\Mymy\obj\Debug\Mymy.csproj.CoreCompileInputs.c
 C:\Users\hitomi\source\repos\Mymy\Mymy\obj\Debug\Mymy.csproj.CopyComplete
 C:\Users\hitomi\source\repos\Mymy\Mymy\obj\Debug\Mymy.dll
 C:\Users\hitomi\source\repos\Mymy\Mymy\obj\Debug\Mymy.pdb
+C:\Users\hitomi\source\repos\mymy\Mymy\obj\Debug\Mymy.csprojResolveAssemblyReference.cache

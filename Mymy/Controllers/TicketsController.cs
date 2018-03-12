@@ -74,8 +74,6 @@ namespace Mymy.Controllers
             ticket.DetailMemo = detailMemo;
             ticket.Visible = true;
 
-            ticket.Date = DateTime.Now;
-
             if (ModelState.IsValid)
             {
                 db.Tickets.Add(ticket);

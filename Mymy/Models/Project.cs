@@ -15,10 +15,8 @@ namespace Mymy.Models
         public string ProjectName { get; set; }
         [DisplayName("チケットURL")]
         public string TicketUrl { get; set; }
-        [DisplayName("一覧のRSSURL")]
-        public string RssUrl { get; set; }
-        [DisplayName("特定チケットのRSSURL")]
-        public string RssTicketUrl { get; set; }
+        [DisplayName("一覧のCSVURL")]
+        public string CsvUrl { get; set; }
         [DisplayName("メモ")]
         public string Memo { get; set; }
         [DisplayName("詳細メモ")]

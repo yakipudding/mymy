@@ -15,21 +15,28 @@ namespace Mymy.Models
         [DisplayName("チケットURL")]
         public string Link { get; set; }
         [DisplayName("タイトル")]
-        public string Title { get; set; }
-        [DisplayName("作成日")]
-        [DisplayFormat(DataFormatString = "{0:yy/MM/dd}")]
-        public DateTime Date { get; set; }
-        [DisplayName("詳細")]
-        public string Description { get; set; }
+        public string Summary { get; set; }
         [DisplayName("作成者")]
-        public string Creator { get; set; }
-        
+        public string Repoter { get; set; }
+        [DisplayName("担当者")]
+        public string Owner { get; set; }
+        [DisplayName("作成日")]
+        [DisplayFormat(DataFormatString = "{0:MM/dd}")]
+        public DateTime CreateDate { get; set; }
+        [DisplayName("更新日")]
+        [DisplayFormat(DataFormatString = "{0:MM/dd}")]
+        public DateTime UpdateDate { get; set; }
+
+        [DisplayName("期日")]
+        [DisplayFormat(DataFormatString = "{0:MM/dd}")]
+        public DateTime DueCloseDate { get; set; }
+        [DisplayName("状態")]
+        public string Status { get; set; }
+
         [DisplayName("TracID")]
         public int TracId { get; set; }
         [DisplayName("カテゴリ")]
         public string Category { get; set; }
-        [DisplayName("状態")]
-        public string Status { get; set; }
         [DisplayName("同時並行")]
         public string Status2 { get; set; }
         [DisplayName("関連リンク")]
@@ -40,23 +47,19 @@ namespace Mymy.Models
         [DataType(DataType.MultilineText)]
         public string DetailMemo { get; set; }
         [DisplayName("表示")]
-        public bool Visible { get; set; }        
+        public bool Visible { get; set; }
+
+        [DisplayName("完了フラグ")]
+        public bool IsClose { get; set; }
 
         [DisplayName("プロジェクト")]
         public virtual Project Project { get; set; }
-
-        /// <summary>
-        /// コンストラクタ　DB用
-        /// </summary>
+        
         public Ticket()
         {
 
         }
-
-        public static int GetTracId(string link)
-        {
-            return int.Parse(link.Substring(link.LastIndexOf('/') + 1));
-        }
+        
     }
 
 }
