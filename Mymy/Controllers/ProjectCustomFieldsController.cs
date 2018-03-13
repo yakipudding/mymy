@@ -11,107 +11,93 @@ using Mymy.Models;
 
 namespace Mymy.Controllers
 {
-    public class ProjectsController : Controller
+    public class ProjectCustomFieldsController : Controller
     {
-        private MymyContext db = new MymyContext();
+        private MymyContext db = new MymyContext();                
 
-        // GET: Projects
-        public ActionResult Index()
+        // GET: ProjectCustomFields/Create
+        public ActionResult Create(int projectid)
         {
-            return View(db.Projects.ToList());
+            var project = db.Projects.FirstOrDefault(x => x.ProjectId == projectid);
+            var projectCustomField = new ProjectCustomField();
+            projectCustomField.Project = project;
+            return View(projectCustomField);
         }
 
-        // GET: Projects/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Project project = db.Projects.Find(id);
-            if (project == null)
-            {
-                return HttpNotFound();
-            }
-            return View(project);
-        }
-
-        // GET: Projects/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Projects/Create
+        // POST: ProjectCustomFields/Create
         // 過多ポスティング攻撃を防止するには、バインド先とする特定のプロパティを有効にしてください。
         // 詳細については、https://go.microsoft.com/fwlink/?LinkId=317598 を参照してください。
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ProjectId,ProjectName,TicketUrl,CsvUrl,Memo,DetailMemo")] Project project)
+        public ActionResult Create(int projectId, string Field, string FieldJapaneseName, bool Visible)
         {
+            var projectCustomField = new ProjectCustomField();
+
             if (ModelState.IsValid)
             {
-                db.Projects.Add(project);
+                var project = db.Projects.FirstOrDefault(x => x.ProjectId == projectId);
+                projectCustomField.Project = project;
+                db.ProjectCustomFields.Add(projectCustomField);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Detail", new { id = projectId, Controller="Project" });
             }
 
-            return View(project);
+            return View(projectCustomField);
         }
 
-        // GET: Projects/Edit/5
+        // GET: ProjectCustomFields/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Project project = db.Projects.Find(id);
-            if (project == null)
+            ProjectCustomField projectCustomField = db.ProjectCustomFields.Find(id);
+            if (projectCustomField == null)
             {
                 return HttpNotFound();
             }
-            return View(project);
+            return View(projectCustomField);
         }
 
-        // POST: Projects/Edit/5
+        // POST: ProjectCustomFields/Edit/5
         // 過多ポスティング攻撃を防止するには、バインド先とする特定のプロパティを有効にしてください。
         // 詳細については、https://go.microsoft.com/fwlink/?LinkId=317598 を参照してください。
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ProjectId,ProjectName,TicketUrl,CsvUrl,Memo,DetailMemo")] Project project)
+        public ActionResult Edit([Bind(Include = "ProjectCustomFieldId,Field,FieldJapaneseName,Visible")] ProjectCustomField projectCustomField)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(project).State = EntityState.Modified;
+                db.Entry(projectCustomField).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(project);
+            return View(projectCustomField);
         }
 
-        // GET: Projects/Delete/5
+        // GET: ProjectCustomFields/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Project project = db.Projects.Find(id);
-            if (project == null)
+            ProjectCustomField projectCustomField = db.ProjectCustomFields.Find(id);
+            if (projectCustomField == null)
             {
                 return HttpNotFound();
             }
-            return View(project);
+            return View(projectCustomField);
         }
 
-        // POST: Projects/Delete/5
+        // POST: ProjectCustomFields/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Project project = db.Projects.Find(id);
-            db.Projects.Remove(project);
+            ProjectCustomField projectCustomField = db.ProjectCustomFields.Find(id);
+            db.ProjectCustomFields.Remove(projectCustomField);
             db.SaveChanges();
             return RedirectToAction("Index");
         }

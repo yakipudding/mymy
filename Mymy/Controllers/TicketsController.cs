@@ -96,6 +96,10 @@ namespace Mymy.Controllers
             {
                 return HttpNotFound();
             }
+            //CSV取得
+            var project = db.Projects.FirstOrDefault(x => x.ProjectId == ticket.Project.ProjectId);
+            //var csvTicket = GetTicketsLogic.GetCsvTicketFromTicket(ticket, project, project.ProjectCustomFields.ToList());
+            //ticket.CsvTicket = csvTicket;
             return View(ticket);
         }
 
@@ -104,7 +108,7 @@ namespace Mymy.Controllers
         // 詳細については、https://go.microsoft.com/fwlink/?LinkId=317598 を参照してください。
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "TicketId,Link,Title,Data,Description,Creator,TracId,Category,Status,Status2,Link2,Memo,DetailMemo,Visible")] Ticket ticket)
+        public ActionResult Edit([Bind(Include = "TicketId,TracId,Category,Status,Status2,Link2,Memo,DetailMemo,Visible")] Ticket ticket)
         {
             var project = db.Tickets.FirstOrDefault(x => x.TicketId == ticket.TicketId).Project;
             ticket.Project = project;
@@ -114,7 +118,7 @@ namespace Mymy.Controllers
                 //db.Entry(ticket).State = EntityState.Modified;
                 db.Set<Ticket>().AddOrUpdate(ticket);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
             return View(ticket);
         }

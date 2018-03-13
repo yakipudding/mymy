@@ -24,5 +24,6 @@ namespace Mymy.Models
         public string DetailMemo { get; set; }
 
         public virtual ICollection<Ticket> Tickets { get; set; }
+        public virtual ICollection<ProjectCustomField> ProjectCustomFields { get; set; }
     }
 }

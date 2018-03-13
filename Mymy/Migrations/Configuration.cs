@@ -18,23 +18,22 @@ namespace Mymy.Migrations
 
         protected override void Seed(Mymy.DAL.MymyContext context)
         {
-            //  This method will be called after migrating to the latest version.
+            var project = new Project { ProjectId = 1, ProjectName = "プロジェクト", TicketUrl = "http://******/" };
+            context.Projects.AddOrUpdate(project);
 
-            //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
-            //  to avoid creating duplicate seed data.
-            var projects = new List<Project>
-            {
-                new Project{ProjectId=1, ProjectName="プロジェクト", TicketUrl="http://******/"},
-                new Project{ProjectId=2, ProjectName="プロジェクト2", TicketUrl="http://******/"}
-            };
-            projects.ForEach(s => context.Projects.Add(s));
-            context.SaveChanges();
+            var projectCustomField = new ProjectCustomField();
+            projectCustomField.ProjectCustomFieldId = 1;
+            projectCustomField.Project = project;
+            projectCustomField.Field = "status2";
+            projectCustomField.FieldJapaneseName = "状態";
+            projectCustomField.Visible = true;
+            context.ProjectCustomFields.AddOrUpdate(projectCustomField);
 
             var settings = new List<Setting>
             {
                 new Setting{SettingId=1, Label="メモ",Memo=""}
             };
-            settings.ForEach(s => context.Settings.Add(s));
+            settings.ForEach(s => context.Settings.AddOrUpdate(s));
             context.SaveChanges();
         }
     }

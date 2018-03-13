@@ -1,9 +1,9 @@
 ﻿@model Mymy.Models.HomeView
 @{
-    ViewBag.Title = "まいまい";
+    ViewBag.Title = "Home";
 }
 
-<h2>まいまい</h2>
+<h2>Home</h2>
 
 @foreach (var setting in Model.Settings)
 {
@@ -27,7 +27,7 @@
                 @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().TracId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().Summary)
+                @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().CsvTicket.Summary)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().Category)
@@ -36,60 +36,62 @@
                 @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().Status)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().Status2)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().DueCloseDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().Repoter)
+                @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().Memo)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().Link2)
             </th>
+            @foreach (var customField in projectTicket.ProjectCustomFields)
+            {
             <th>
-                @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().Memo)
+                @Html.DisplayFor(modelItem => customField.FieldJapaneseName)
             </th>
-            <th></th>
+            }
+            <th>
+                @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().CsvTicket.DueClose)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().CsvTicket.Reporter)
+            </th>
         </tr>
         @if (projectTicket.Tickets.Any())
         {
             foreach (var item in projectTicket.Tickets)
             {
-                <tr>
-                    <td>
-                        <a href="@Html.DisplayFor(modelItem => item.Link)">
-                            @Html.DisplayFor(modelItem => item.TracId)
-                        </a>
-                    </td>
-                    <td>
-                        @Html.ActionLink(item.Summary, "Edit", new { id = item.TicketId, controller = "Tickets" })
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Category)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Status)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Status2)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.DueCloseDate)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Repoter)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Link2)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Memo)
-                    </td>
-                    <td>
-                        @Html.ActionLink("Delete", "Delete", new { id = item.TicketId, controller = "Tickets" })
-                    </td>
-                </tr>
+        <tr>
+            <td>
+                <a href="@projectTicket.TicketUrl + Html.DisplayFor(modelItem => item.TracId)">
+                    @Html.DisplayFor(modelItem => item.TracId)
+                </a>
+            </td>
+            <td>
+                @Html.ActionLink(item.CsvTicket.Summary, "Edit", new { id = item.TicketId, controller = "Tickets" })
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Memo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Link2)
+            </td>
+            @foreach (var customFieldItem in item.CsvTicket.CsvTicketCustoms)
+            {
+                <td>
+                @Html.DisplayFor(modelItem => customFieldItem.FieldValue)
+                </td>
+            }
+            <td>
+                @Html.DisplayFor(modelItem => item.CsvTicket.DueClose)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CsvTicket.Reporter)
+            </td>
+        </tr>
             }
         }
     </table>

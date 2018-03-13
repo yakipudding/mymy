@@ -18,10 +18,13 @@
             @Html.DisplayNameFor(model => model.TicketUrl)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.RssUrl)
+            @Html.DisplayNameFor(model => model.CsvUrl)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Memo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DetailMemo)
         </th>
         <th></th>
     </tr>
@@ -35,10 +38,13 @@
             @Html.DisplayFor(modelItem => item.TicketUrl)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.RssUrl)
+            @Html.DisplayFor(modelItem => item.CsvUrl)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Memo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DetailMemo)
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.ProjectId }) |

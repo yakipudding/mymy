@@ -30,8 +30,18 @@ namespace Mymy.Controllers
                 }
             }
 
+            //DBから再取得してCsvTicketと結合
+            var tickets = db.Tickets.ToList();
+            foreach (var ticket in tickets)
+            {
+                var csvTicket = getTickets.CsvTickets.FirstOrDefault(x => x.ProjectId == ticket.Project.ProjectId
+                                                                       && x.TracId == ticket.TracId);
+                ticket.CsvTicket = csvTicket;
+
+            }
+
             //グルーピングして渡す
-            var groupTickets = getTickets.Tickets.GroupBy(x => x.Project.ProjectId);
+            var groupTickets = tickets.GroupBy(x => x.Project.ProjectId);
             var homeView = new HomeView();
             var homeViewProjects = new List<Project>();
             homeView.Settings = settings;
@@ -40,9 +50,9 @@ namespace Mymy.Controllers
             {
                 var project = new Project();
                 project = projects.FirstOrDefault(x => x.ProjectId == groupTicket.Key);
-                var tickets = new List<Ticket>();
-                tickets = groupTicket.ToList();
-                project.Tickets = tickets;
+                var projectTickets = new List<Ticket>();
+                projectTickets = groupTicket.ToList();
+                project.Tickets = projectTickets;
 
                 homeViewProjects.Add(project);           
             }

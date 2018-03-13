@@ -27,11 +27,11 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.RssUrl)
+            @Html.DisplayNameFor(model => model.CsvUrl)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.RssUrl)
+            @Html.DisplayFor(model => model.CsvUrl)
         </dd>
 
         <dt>
@@ -42,8 +42,55 @@
             @Html.DisplayFor(model => model.Memo)
         </dd>
 
+        <dt>
+            @Html.DisplayNameFor(model => model.DetailMemo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DetailMemo)
+        </dd>
+
     </dl>
 </div>
+
+<p>
+    @Html.ActionLink("Create New", "Create", new { projectid = Model.ProjectId, controller = "ProjectCustomField" })
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.ProjectCustomFields.First().Field)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ProjectCustomFields.First().FieldJapaneseName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ProjectCustomFields.First().Visible)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model.ProjectCustomFields)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Field)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FieldJapaneseName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Visible)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.ProjectCustomFieldId }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.ProjectCustomFieldId })
+            </td>
+        </tr>
+    }
+
+</table>
+
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.ProjectId }) |
     @Html.ActionLink("Back to List", "Index")
