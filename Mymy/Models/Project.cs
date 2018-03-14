@@ -13,10 +13,12 @@ namespace Mymy.Models
         public int ProjectId { get; set; }
         [DisplayName("プロジェクト名")]
         public string ProjectName { get; set; }
-        [DisplayName("チケットURL")]
-        public string TicketUrl { get; set; }
-        [DisplayName("一覧のCSVURL")]
-        public string CsvUrl { get; set; }
+        [DisplayName("プロジェクトURL")]
+        public string ProjectUrl { get; set; }  //http://*****/
+        [DisplayName("一覧の条件部分")]
+        public string Condition { get; set; }   //owner=****
+        [DisplayName("項目部分")]
+        public string Column { get; set; }      //col=id&col=...
         [DisplayName("メモ")]
         public string Memo { get; set; }
         [DisplayName("詳細メモ")]

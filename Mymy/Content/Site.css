@@ -24,4 +24,10 @@ select{
 
 textarea{
     max-width: 500px;
+    width: 500px;
+}
+
+.form-long {
+    max-width: 600px;
+    width: 600px;
 }

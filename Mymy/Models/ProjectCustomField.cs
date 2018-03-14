@@ -21,6 +21,8 @@ namespace Mymy.Models
         public string FieldJapaneseName { get; set; }
         [DisplayName("表示")]
         public bool Visible { get; set; }
+        [DisplayName("表示順")]
+        public int DisplayOrder { get; set; }
     }
 
 }

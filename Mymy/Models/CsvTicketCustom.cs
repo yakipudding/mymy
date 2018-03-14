@@ -24,6 +24,8 @@ namespace Mymy.Models
         public string FieldJapaneseName { get; set; }
         [DisplayName("項目値")]
         public string FieldValue { get; set; }
+        [DisplayName("表示順")]
+        public int DisplayOrder { get; set; }
 
     }
 

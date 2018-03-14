@@ -18,7 +18,7 @@ namespace Mymy.Migrations
 
         protected override void Seed(Mymy.DAL.MymyContext context)
         {
-            var project = new Project { ProjectId = 1, ProjectName = "プロジェクト", TicketUrl = "http://******/" };
+            var project = new Project { ProjectId = 1, ProjectName = "プロジェクト", ProjectUrl = "http://******/" };
             context.Projects.AddOrUpdate(project);
 
             var projectCustomField = new ProjectCustomField();

@@ -33,7 +33,9 @@ namespace Mymy.Models
         public string DetailMemo { get; set; }
         [DisplayName("表示")]
         public bool Visible { get; set; }
-        
+
+        public string Link { get; set; }
+
         [NotMapped]
         public virtual CsvTicket CsvTicket { get; set; }
 

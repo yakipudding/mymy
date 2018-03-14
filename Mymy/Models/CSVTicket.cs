@@ -42,7 +42,7 @@ namespace Mymy.Models
         public string DueAssign { get; set; }
         [DisplayName("期日")]
         public string DueClose { get; set; }        
-        
+
         public List<CsvTicketCustom> CsvTicketCustoms { get; set; }
     }
 

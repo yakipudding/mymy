@@ -74,6 +74,8 @@ namespace Mymy.Controllers
             ticket.DetailMemo = detailMemo;
             ticket.Visible = true;
 
+            ticket.Link = project.ProjectUrl + tracId;
+
             if (ModelState.IsValid)
             {
                 db.Tickets.Add(ticket);
@@ -112,6 +114,7 @@ namespace Mymy.Controllers
         {
             var project = db.Tickets.FirstOrDefault(x => x.TicketId == ticket.TicketId).Project;
             ticket.Project = project;
+            ticket.Link = project.ProjectUrl + ticket.TracId;
 
             if (ModelState.IsValid)
             {

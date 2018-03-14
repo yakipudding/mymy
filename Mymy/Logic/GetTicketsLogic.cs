@@ -26,9 +26,10 @@ namespace Mymy.Logic
                 var dbProjectCustomField = project.ProjectCustomFields.Where(x => x.Visible).ToList();
 
                 //CSVから取得
-                if (project.CsvUrl != null)
+                if (project.Condition != null)
                 {
-                    var data = GetDataFromCsv(project.CsvUrl);
+                    var url = project.ProjectUrl + "query?" + project.Condition + "&" + project.Column;
+                    var data = GetDataFromCsv(url);
                     ConvertDataTableToTickets(project, data, dbProjectTickets, dbProjectCustomField); //ここでListに追加
                 }
 
@@ -41,7 +42,7 @@ namespace Mymy.Logic
                         //CSVから最新情報取得
                         if (IsUseCSV)
                         {
-                            string CsvUrl = project.TicketUrl + dbProjectTicket.TracId + "?type=csv";
+                            string CsvUrl = project.ProjectUrl+ "query?id=" + dbProjectTicket.TracId + "&format=csv&" + project.Column;
                             var data = GetDataFromCsv(CsvUrl);
                             CsvTickets.Add(UpdateTicketFromData(dbProjectTicket, data, dbProjectCustomField));
                         }
@@ -146,6 +147,7 @@ namespace Mymy.Logic
                         var ticket = new Ticket();
                         ticket.Project = project;
                         ticket.TracId = csvTicket.TracId;
+                        ticket.Link = project.ProjectUrl + "ticket/" + csvTicket.TracId;
                         ticket.Visible = true;
 
                         //データが存在しないため、新規登録を行う
@@ -214,6 +216,7 @@ namespace Mymy.Logic
                     csvTicketCustom.Field = item.Field;
                     csvTicketCustom.FieldJapaneseName = item.FieldJapaneseName;
                     csvTicketCustom.FieldValue = row[item.Field].ToString();
+                    csvTicketCustom.DisplayOrder = item.DisplayOrder;
 
                     csvTicket.CsvTicketCustoms.Add(csvTicketCustom);
                 }
@@ -225,7 +228,7 @@ namespace Mymy.Logic
         public static CsvTicket GetCsvTicketFromTicket(Ticket ticket, Project project, List<ProjectCustomField> dbProjectCustomFields)
         {
             //CSVから最新情報取得
-            string CsvUrl = project.TicketUrl + ticket.TracId + "?type=csv";
+            string CsvUrl = project.ProjectUrl + "query?id=" + ticket.TracId + "&format=csv&" + project.Column;
             var data = GetDataFromCsv(CsvUrl);
             return ConvertRowToCstTicket(data.Rows[0], project.ProjectId, dbProjectCustomFields);
         }
