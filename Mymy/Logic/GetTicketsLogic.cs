@@ -16,7 +16,7 @@ namespace Mymy.Logic
         public List<CsvTicket> CsvTickets = new List<CsvTicket>();
         public List<Ticket> NewTickets = new List<Ticket>();
         
-        private bool IsUseCSV = false;
+        private bool IsUseCSV = true;
         
         public GetTicketsLogic(List<Project> dbProjects)
         {
@@ -28,7 +28,7 @@ namespace Mymy.Logic
                 //CSVから取得
                 if (project.Condition != null)
                 {
-                    var url = project.ProjectUrl + "query?" + project.Condition + "&" + project.Column;
+                    var url = project.ProjectUrl + "query?" + project.Condition + "&format=csv&" + project.Column;
                     var data = GetDataFromCsv(url);
                     ConvertDataTableToTickets(project, data, dbProjectTickets, dbProjectCustomField); //ここでListに追加
                 }
@@ -50,29 +50,29 @@ namespace Mymy.Logic
                 }
             }
 
-            //ファイルから取得（テスト用）
-            var testData = new DataTable();
-            var sr = new StreamReader(@"C:\tmp\test.csv", System.Text.Encoding.GetEncoding("shift_jis"));
-            var line = sr.ReadLine();
-            var headers = line.Split(',');
+            ////ファイルから取得（テスト用）
+            //var testData = new DataTable();
+            //var sr = new StreamReader(@"C:\tmp\test.csv", System.Text.Encoding.GetEncoding("shift_jis"));
+            //var line = sr.ReadLine();
+            //var headers = line.Split(',');
 
-            foreach (var head in headers)
-            {
-                testData.Columns.Add(head);
-            }
-            // ストリームの末尾まで繰り返す
-            while (!sr.EndOfStream)
-            {
-                string[] rows = sr.ReadLine().Split(',');
-                DataRow dr = testData.NewRow();
-                for (int i = 0; i < headers.Length; i++)
-                {
-                    dr[i] = rows[i];
-                }
-                testData.Rows.Add(dr);
-            }
-            var testProject = dbProjects.FirstOrDefault(x => x.ProjectId == 1);
-            ConvertDataTableToTickets(testProject, testData, testProject.Tickets.ToList(), testProject.ProjectCustomFields.ToList());
+            //foreach (var head in headers)
+            //{
+            //    testData.Columns.Add(head);
+            //}
+            //// ストリームの末尾まで繰り返す
+            //while (!sr.EndOfStream)
+            //{
+            //    string[] rows = sr.ReadLine().Split(',');
+            //    DataRow dr = testData.NewRow();
+            //    for (int i = 0; i < headers.Length; i++)
+            //    {
+            //        dr[i] = rows[i];
+            //    }
+            //    testData.Rows.Add(dr);
+            //}
+            //var testProject = dbProjects.FirstOrDefault(x => x.ProjectId == 1);
+            //ConvertDataTableToTickets(testProject, testData, testProject.Tickets.ToList(), testProject.ProjectCustomFields.ToList());
 
             return;
         }
@@ -188,10 +188,10 @@ namespace Mymy.Logic
 
             var tracId = int.Parse(row["id"].ToString());
             var summary = row["summary"].ToString();
-            var reporter = row["reporter"].ToString();
-            var owner = row["owner"].ToString();
-            //var createdate_str = row["time"].ToString();          //一覧にはあるけどチケットにない
-            //var updatedate_str = row["changetime"].ToString();    //一覧にはあるけどチケットにない
+            //var reporter = row["reporter"].ToString();        //ものによってはいらないのでカスタムフィールドで
+            //var owner = row["owner"].ToString();              //ものによってはいらないのでカスタムフィールドで
+            var createdate_str = row["time"].ToString();          //一覧にはあるけどチケットにない
+            var updatedate_str = row["changetime"].ToString();    //一覧にはあるけどチケットにない
             var status = row["status"].ToString();
             var dueclosedate_str = row["due_close"].ToString(); //期日
                                                                 //他の項目もあるけど今のところ使わない
@@ -199,10 +199,10 @@ namespace Mymy.Logic
             csvTicket.ProjectId = projectId;
             csvTicket.TracId = tracId;
             csvTicket.Summary = summary;
-            csvTicket.Reporter = reporter;
-            csvTicket.Owner = owner;
-            //ticket.CreateDate = DateTime.Parse(createdate_str);
-            //ticket.UpdateDate = DateTime.Parse(updatedate_str);
+            //csvTicket.Reporter = reporter;
+            //csvTicket.Owner = owner;
+            csvTicket.CreateDate = DateTime.Parse(createdate_str);
+            csvTicket.UpdateDate = DateTime.Parse(updatedate_str);
             csvTicket.Status = status;
             csvTicket.DueClose = dueclosedate_str;
 

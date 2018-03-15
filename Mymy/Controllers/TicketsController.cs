@@ -59,13 +59,14 @@ namespace Mymy.Controllers
         // 詳細については、https://go.microsoft.com/fwlink/?LinkId=317598 を参照してください。
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(int projectId, int tracId, string category, string status, string status2, string link2, string memo, string detailMemo)
+        public ActionResult Create(int projectId, int tracId, string summary, string category, string status, string status2, string link2, string memo, string detailMemo)
         {
             var ticket = new Ticket();
             var project = db.Projects.FirstOrDefault(x => x.ProjectId == projectId);
 
             ticket.Project = project;
             ticket.TracId = tracId;
+            ticket.Summary = summary;
             ticket.Category = category;
             ticket.Status = status;
             ticket.Status2 = status2;
@@ -100,8 +101,10 @@ namespace Mymy.Controllers
             }
             //CSV取得
             var project = db.Projects.FirstOrDefault(x => x.ProjectId == ticket.Project.ProjectId);
-            //var csvTicket = GetTicketsLogic.GetCsvTicketFromTicket(ticket, project, project.ProjectCustomFields.ToList());
-            //ticket.CsvTicket = csvTicket;
+            var csvTicket = GetTicketsLogic.GetCsvTicketFromTicket(ticket, project, project.ProjectCustomFields.ToList());
+            ticket.CsvTicket = csvTicket;
+            ticket.Summary = csvTicket.Summary;
+
             return View(ticket);
         }
 
@@ -110,15 +113,14 @@ namespace Mymy.Controllers
         // 詳細については、https://go.microsoft.com/fwlink/?LinkId=317598 を参照してください。
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "TicketId,TracId,Category,Status,Status2,Link2,Memo,DetailMemo,Visible")] Ticket ticket)
+        public ActionResult Edit([Bind(Include = "TicketId,TracId,Summary,Category,Status,Status2,Link2,Memo,DetailMemo,Visible")] Ticket ticket)
         {
             var project = db.Tickets.FirstOrDefault(x => x.TicketId == ticket.TicketId).Project;
             ticket.Project = project;
-            ticket.Link = project.ProjectUrl + ticket.TracId;
+            ticket.Link = project.ProjectUrl + "ticket/" + ticket.TracId;
 
             if (ModelState.IsValid)
             {
-                //db.Entry(ticket).State = EntityState.Modified;
                 db.Set<Ticket>().AddOrUpdate(ticket);
                 db.SaveChanges();
                 return RedirectToAction("Index", "Home");

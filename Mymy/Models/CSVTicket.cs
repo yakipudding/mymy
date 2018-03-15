@@ -39,7 +39,11 @@ namespace Mymy.Models
         [DisplayName("cc")]
         public string Cc { get; set; }
         [DisplayName("作成日")]
-        public string DueAssign { get; set; }
+        [DisplayFormat(DataFormatString = "{0:MM/dd}")]
+        public DateTime? CreateDate { get; set; }
+        [DisplayName("更新日")]
+        [DisplayFormat(DataFormatString = "{0:MM/dd hh:mm}")]
+        public DateTime? UpdateDate { get; set; }
         [DisplayName("期日")]
         public string DueClose { get; set; }        
 

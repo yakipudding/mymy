@@ -17,7 +17,8 @@ namespace Mymy.Models
         public virtual Project Project { get; set; }
         [DisplayName("TracID")]
         public int TracId { get; set; }
-
+        [DisplayName("チケット名")]
+        public string Summary { get; set; }
         [DisplayName("カテゴリ")]
         public string Category { get; set; }
         [DisplayName("状態")]
