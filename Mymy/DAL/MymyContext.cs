@@ -17,5 +17,7 @@ namespace Mymy.DAL
         public DbSet<ProjectCustomField> ProjectCustomFields { get; set; }
         public DbSet<Setting> Settings { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
+
+        public System.Data.Entity.DbSet<Mymy.Models.Memo> Memos { get; set; }
     }
 }

@@ -39,6 +39,10 @@ namespace Mymy.Models
 
         [NotMapped]
         public virtual CsvTicket CsvTicket { get; set; }
+        [NotMapped]
+        public virtual List<Memo> Memos { get; set; }
+        [NotMapped]
+        public bool? FromIndex { get; set; }
 
     }
 

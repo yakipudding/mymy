@@ -19,6 +19,7 @@
     @Html.HiddenFor(model => model.Project.ProjectId)
     @Html.HiddenFor(model => model.TracId)
     @Html.HiddenFor(model => model.Summary)
+    @Html.HiddenFor(model => model.FromIndex)
 
     <div>
         <div style="width:600px; float:left;">
@@ -32,9 +33,9 @@
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(model => model.CsvTicket.Summary, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.Summary, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.DisplayFor(model => model.CsvTicket.Summary, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.DisplayFor(model => model.Summary, new { htmlAttributes = new { @class = "form-control" } })
                 </div>
             </div>
 
@@ -73,7 +74,7 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.Memo, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.Memo, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.EditorFor(model => model.Memo, new { htmlAttributes = new { @class = "form-control form-long" } })
                     @Html.ValidationMessageFor(model => model.Memo, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -113,6 +114,15 @@
             <div class="col-md-10">
                 @Html.Raw(Html.Encode(Model.Project.DetailMemo).Replace("\n", "<br />"))
             </div>
+            @foreach (var item in Model.Memos)
+            {
+                <div class="col-md-10" style="font-weight:bold; margin: 5px 0px 5px 0px;">
+                    @Html.DisplayFor(model => item.Title)
+                </div>
+                <div class="col-md-10">
+                    @Html.Raw(Html.Encode(item.Content).Replace("\n", "<br />"))
+                </div>
+            }
         </div>
     </div>
 

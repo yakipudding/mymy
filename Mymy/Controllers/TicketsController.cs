@@ -10,6 +10,7 @@ using Mymy.DAL;
 using Mymy.Logic;
 using Mymy.Models;
 using System.Data.Entity.Migrations;
+using System.Configuration;
 
 namespace Mymy.Controllers
 {
@@ -18,9 +19,9 @@ namespace Mymy.Controllers
         private MymyContext db = new MymyContext();
 
         // GET: Tickets
-        public ActionResult Index()
+        public ActionResult Index(int? projectId)
         {
-            return View(db.Tickets.ToList());
+            return View(db.Tickets.Where(x => x.Project.ProjectId == projectId).ToList());
         }
 
         // GET: Tickets/Details/5
@@ -88,7 +89,7 @@ namespace Mymy.Controllers
         }
 
         // GET: Tickets/Edit/5
-        public ActionResult Edit(int? id)
+        public ActionResult Edit(int? id, bool? fromIndex)
         {
             if (id == null)
             {
@@ -101,9 +102,21 @@ namespace Mymy.Controllers
             }
             //CSV取得
             var project = db.Projects.FirstOrDefault(x => x.ProjectId == ticket.Project.ProjectId);
-            var csvTicket = GetTicketsLogic.GetCsvTicketFromTicket(ticket, project, project.ProjectCustomFields.ToList());
-            ticket.CsvTicket = csvTicket;
-            ticket.Summary = csvTicket.Summary;
+
+            bool isUseTrac = ConfigurationManager.AppSettings["IsUseTrac"] == "true";
+            if (isUseTrac)
+            {
+                var csvTicket = GetTicketsLogic.GetCsvTicketFromTicket(ticket, project, project.ProjectCustomFields.ToList());
+                ticket.CsvTicket = csvTicket;
+                ticket.Summary = csvTicket.Summary;
+            }
+            ticket.FromIndex = fromIndex;
+
+            if (!string.IsNullOrEmpty(ticket.Category))
+            {
+                var memos = db.Memos.Where(x => x.Category == ticket.Category).ToList();
+                ticket.Memos = memos;
+            }
 
             return View(ticket);
         }
@@ -113,7 +126,7 @@ namespace Mymy.Controllers
         // 詳細については、https://go.microsoft.com/fwlink/?LinkId=317598 を参照してください。
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "TicketId,TracId,Summary,Category,Status,Status2,Link2,Memo,DetailMemo,Visible")] Ticket ticket)
+        public ActionResult Edit([Bind(Include = "TicketId,TracId,Summary,Category,Status,Status2,Link2,Memo,DetailMemo,Visible,FromIndex")] Ticket ticket)
         {
             var project = db.Tickets.FirstOrDefault(x => x.TicketId == ticket.TicketId).Project;
             ticket.Project = project;
@@ -123,7 +136,14 @@ namespace Mymy.Controllers
             {
                 db.Set<Ticket>().AddOrUpdate(ticket);
                 db.SaveChanges();
-                return RedirectToAction("Index", "Home");
+                if (ticket.FromIndex == true)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Tickets", new { projectId = project.ProjectId });
+                }
             }
             return View(ticket);
         }

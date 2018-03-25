@@ -149,6 +149,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\MemosController.cs" />
     <Compile Include="Controllers\ProjectCustomFieldsController.cs" />
     <Compile Include="Controllers\ProjectsController.cs" />
     <Compile Include="Controllers\SettingsController.cs" />
@@ -163,6 +164,7 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\CsvTicketCustom.cs" />
+    <Compile Include="Models\Memo.cs" />
     <Compile Include="Models\ProjectCustomField.cs" />
     <Compile Include="Models\Project.cs" />
     <Compile Include="Models\CsvTicket.cs" />
@@ -228,6 +230,11 @@
     <Content Include="Views\Settings\Details.cshtml" />
     <Content Include="Views\Settings\Edit.cshtml" />
     <Content Include="Views\Settings\Index.cshtml" />
+    <Content Include="Views\Memos\Create.cshtml" />
+    <Content Include="Views\Memos\Delete.cshtml" />
+    <Content Include="Views\Memos\Details.cshtml" />
+    <Content Include="Views\Memos\Edit.cshtml" />
+    <Content Include="Views\Memos\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

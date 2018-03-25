@@ -13,25 +13,22 @@
 <table class="table">
     <tr>
         <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Category)
+        </th>
+        <th>
+            プロジェクト
+        </th>
+        <th>
             @Html.DisplayNameFor(model => model.FirstOrDefault().TracId)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().Title)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().Category)
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Summary)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.FirstOrDefault().Status)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.FirstOrDefault().Status2)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().Date)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().Creator)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.FirstOrDefault().Link2)
@@ -50,27 +47,24 @@
     {
     <tr>
         <td>
-            <a href="@Html.DisplayFor(modelItem => item.TracId)">
+            @Html.DisplayFor(modelItem => item.Category)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Project.ProjectName)
+        </td>
+        <td>
+            <a href="@Html.DisplayFor(modelItem => item.Link)" target="_blank">
                 @Html.DisplayFor(modelItem => item.TracId)
             </a>
         </td>
         <td>
-            @Html.ActionLink(item.Title, "Edit", new { id = item.TicketId })
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Category)
+            @Html.ActionLink(item.Summary ?? "Edit", "Edit", new { id = item.TicketId })
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Status)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Status2)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Date)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Creator)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Link2)
@@ -82,6 +76,7 @@
             @Html.DisplayFor(modelItem => item.Visible)
         </td>
         <td>
+            @Html.ActionLink("Edit", "Edit", new { id = item.TicketId })　|
             @Html.ActionLink("Delete", "Delete", new { id = item.TicketId })
         </td>
     </tr>

@@ -31,11 +31,12 @@ namespace Mymy.Controllers
             }
 
             //DBから再取得してCsvTicketと結合
-            var tickets = db.Tickets.ToList();
+            var tickets = db.Tickets.Where(x => x.Visible).ToList();
             foreach (var ticket in tickets)
             {
                 var csvTicket = getTickets.CsvTickets.FirstOrDefault(x => x.ProjectId == ticket.Project.ProjectId
                                                                        && x.TracId == ticket.TracId);
+                ticket.Summary = csvTicket.Summary;
                 ticket.CsvTicket = csvTicket;
 
             }
