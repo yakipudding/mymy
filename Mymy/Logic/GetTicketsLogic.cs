@@ -56,6 +56,11 @@ namespace Mymy.Logic
                             var data = GetDataFromCsv(CsvUrl);
                             CsvTickets.Add(UpdateTicketFromData(dbProjectTicket, data, dbProjectCustomField));
                         }
+                        else
+                        {
+                            var data = GetDataFromTestCsv(dbProjectTicket.TracId, project);
+                            CsvTickets.Add(UpdateTicketFromData(dbProjectTicket, data, dbProjectCustomField));
+                        }
                     }
                 }
             }
@@ -225,25 +230,6 @@ namespace Mymy.Logic
             var testData = new DataTable();
             var sr = new StreamReader(@"C:\tmp\"+ project.ProjectId + @"\test.csv", System.Text.Encoding.GetEncoding("shift_jis"));
             testData = ConvertStreamToDataTable(sr);
-            //var line = sr.ReadLine();
-            //var headers = line.Split(',');
-
-            //foreach (var head in headers)
-            //{
-            //    testData.Columns.Add(head);
-            //}
-            //// ストリームの末尾まで繰り返す
-            //while (!sr.EndOfStream)
-            //{
-            //    string[] rows = sr.ReadLine().Split(',');
-            //    DataRow dr = testData.NewRow();
-            //    for (int i = 0; i < headers.Length; i++)
-            //    {
-            //        dr[i] = rows[i];
-            //    }
-            //    testData.Rows.Add(dr);
-            //}
-            //var testProject = dbProjects.FirstOrDefault(x => x.ProjectId == 1);
             sr.Dispose();
 
             ConvertDataTableToTickets(project, testData, project.Tickets.ToList(), project.ProjectCustomFields.ToList());
@@ -263,16 +249,8 @@ namespace Mymy.Logic
             // ストリームの末尾まで繰り返す
             while (!sr.EndOfStream)
             {
-                //string[] rows = sr.ReadLine().Split(',');
-                //DataRow dr = testData.NewRow();
-                //for (int i = 0; i < headers.Length; i++)
-                //{
-                //    dr[i] = rows[i];
-                //}
-                //testData.Rows.Add(dr);
                 string line2 = sr.ReadLine();
                 string[] fields = line2.Split(',');
-                //string[] fields = line.Split('\t'); //TSVファイルの場合
 
                 for (int i = 0; i < fields.Length - 1; i++)
                 {
@@ -324,5 +302,17 @@ namespace Mymy.Logic
             }
             return testData;
         }
+
+        private DataTable GetDataFromTestCsv(int tracId, Project project)
+        {
+            //ファイルから取得（テスト用）
+            var testData = new DataTable();
+            var sr = new StreamReader(@"C:\tmp\" + project.ProjectId + @"\" + tracId.ToString() + ".csv", System.Text.Encoding.GetEncoding("shift_jis"));
+            testData = ConvertStreamToDataTable(sr);
+            sr.Dispose();
+
+            return testData;
+        }
+
     }
 }

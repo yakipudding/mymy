@@ -20,9 +20,7 @@
         <th>
             @Html.DisplayNameFor(model => model.Memo)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.DetailMemo)
-        </th>
+        <th></th>
         <th></th>
     </tr>
 
@@ -37,9 +35,11 @@
         <td>
             @Html.DisplayFor(modelItem => item.Memo)
         </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.DetailMemo)
-        </td>
+        <th>
+            @Html.ActionLink("[新規チケット登録]", "Create", new { projectId = item.ProjectId, controller = "Tickets" })
+            　
+            @Html.ActionLink("[過去チケット]", "Index", new { projectId = item.ProjectId, controller = "Tickets" })
+        </th>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.ProjectId }) |
             @Html.ActionLink("Details", "Details", new { id=item.ProjectId }) |

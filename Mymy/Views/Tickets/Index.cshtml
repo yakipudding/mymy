@@ -16,9 +16,6 @@
             @Html.DisplayNameFor(model => model.FirstOrDefault().Category)
         </th>
         <th>
-            プロジェクト
-        </th>
-        <th>
             @Html.DisplayNameFor(model => model.FirstOrDefault().TracId)
         </th>
         <th>
@@ -50,15 +47,12 @@
             @Html.DisplayFor(modelItem => item.Category)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Project.ProjectName)
-        </td>
-        <td>
             <a href="@Html.DisplayFor(modelItem => item.Link)" target="_blank">
                 @Html.DisplayFor(modelItem => item.TracId)
             </a>
         </td>
         <td>
-            @Html.ActionLink(item.Summary ?? "Edit", "Edit", new { id = item.TicketId })
+            @Html.ActionLink(item.Summary?.Substring(0, Math.Min(item.Summary.Length, 50)) ?? "Edit", "Edit", new { id = item.TicketId })
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Status)

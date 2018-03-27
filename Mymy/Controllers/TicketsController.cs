@@ -117,6 +117,10 @@ namespace Mymy.Controllers
                 var memos = db.Memos.Where(x => x.Category == ticket.Category).ToList();
                 ticket.Memos = memos;
             }
+            else
+            {
+                ticket.Memos = new List<Memo>();
+            }
 
             return View(ticket);
         }

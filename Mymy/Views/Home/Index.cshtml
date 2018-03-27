@@ -67,7 +67,7 @@
                 </a>
             </td>
             <td>
-                @Html.ActionLink(item.CsvTicket.Summary, "Edit", new { id = item.TicketId, controller = "Tickets", fromIndex = true })
+                @Html.ActionLink(item.CsvTicket.Summary?.Substring(0, Math.Min(item.CsvTicket.Summary.Length, 60)), "Edit", new { id = item.TicketId, controller = "Tickets", fromIndex = true })
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Status)

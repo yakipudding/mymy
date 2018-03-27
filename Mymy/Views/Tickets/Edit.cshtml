@@ -22,7 +22,7 @@
     @Html.HiddenFor(model => model.FromIndex)
 
     <div>
-        <div style="width:600px; float:left;">
+        <div style="width:800px; float:left;">
             <div class="form-group">
                 <label class="control-label col-md-2">チケット</label>
                 <div class="col-md-10">
@@ -112,7 +112,8 @@
                 @Html.DisplayFor(model => model.Project.Memo)
             </div>
             <div class="col-md-10">
-                @Html.Raw(Html.Encode(Model.Project.DetailMemo).Replace("\n", "<br />"))
+                @*@Html.Raw(Html.Encode(Model.Project.DetailMemo).Replace("\n", "<br />"))*@
+                <textarea onClick="this.select();" rows="5" class="form-control text-box multi-line">@Html.DisplayFor(model => model.Project.DetailMemo)</textarea>
             </div>
             @foreach (var item in Model.Memos)
             {
@@ -120,7 +121,8 @@
                     @Html.DisplayFor(model => item.Title)
                 </div>
                 <div class="col-md-10">
-                    @Html.Raw(Html.Encode(item.Content).Replace("\n", "<br />"))
+                    @*@Html.Raw(Html.Encode(item.Content).Replace("\n", "<br />"))*@
+                    <textarea onClick="this.select();" rows="5" class="form-control text-box multi-line">@Html.DisplayFor(model => item.Content)</textarea>
                 </div>
             }
         </div>

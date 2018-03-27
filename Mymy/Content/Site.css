@@ -31,3 +31,9 @@ textarea{
     max-width: 600px;
     width: 600px;
 }
+
+@media (min-width: 1686px) {
+    .container {
+        max-width: 1686px;
+    }
+}
