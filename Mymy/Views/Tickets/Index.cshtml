@@ -1,79 +1,111 @@
-﻿@model IEnumerable<Mymy.Models.Ticket>
+﻿@model Mymy.Models.OldTicketsView
 
 @{
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2>過去チケット一覧</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.Project.ProjectId)
+    <div class="form-group">
+        @Html.LabelFor(model => model.Category, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10" style="margin-bottom:5px;">
+            @Html.EditorFor(model => model.Category, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Summary, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10" style="margin-bottom:5px;">
+            @Html.EditorFor(model => model.Summary, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Display, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10" style="margin-bottom:5px;">
+            @Html.EnumDropDownListFor(model => model.Display, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10" style="margin-bottom:5px;">
+            <input type="submit" value="Search" class="btn btn-default" />
+        </div>
+    </div>
+}
 
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().Category)
+            @Html.DisplayNameFor(model => model.Tickets.FirstOrDefault().Category)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().TracId)
+            @Html.DisplayNameFor(model => model.Tickets.FirstOrDefault().TracId)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().Summary)
+            @Html.DisplayNameFor(model => model.Tickets.FirstOrDefault().Summary)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().Status)
+            @Html.DisplayNameFor(model => model.Tickets.FirstOrDefault().Status)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().Status2)
+            @Html.DisplayNameFor(model => model.Tickets.FirstOrDefault().Status2)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().Link2)
+            @Html.DisplayNameFor(model => model.Tickets.FirstOrDefault().Link2)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().Memo)
+            @Html.DisplayNameFor(model => model.Tickets.FirstOrDefault().Memo)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().Visible)
+            @Html.DisplayNameFor(model => model.Tickets.FirstOrDefault().Visible)
         </th>
         <th></th>
     </tr>
-@if (Model.Any())
-{
-    foreach (var item in Model)
+    @if (Model.Tickets.Any())
     {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Category)
-        </td>
-        <td>
-            <a href="@Html.DisplayFor(modelItem => item.Link)" target="_blank">
-                @Html.DisplayFor(modelItem => item.TracId)
-            </a>
-        </td>
-        <td>
-            @Html.ActionLink(item.Summary?.Substring(0, Math.Min(item.Summary.Length, 50)) ?? "Edit", "Edit", new { id = item.TicketId })
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Status)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Status2)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Link2)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Memo)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Visible)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id = item.TicketId })　|
-            @Html.ActionLink("Delete", "Delete", new { id = item.TicketId })
-        </td>
-    </tr>
+        foreach (var item in Model.Tickets)
+        {
+            <tr>
+                <td>
+                    @foreach (var category in item.Categories)
+                    {
+                        <p class="p-category">
+                            @Html.DisplayFor(modelItem => category)
+                        </p>
+                    }
+                </td>
+                <td>
+                    <a href="@Html.DisplayFor(modelItem => item.Link)" target="_blank">
+                        @Html.DisplayFor(modelItem => item.TracId)
+                    </a>
+                </td>
+                <td class="td-summary">
+                    @Html.ActionLink(item.Summary?.Substring(0, Math.Min(item.Summary.Length, 50)) ?? "Edit", "Edit", new { id = item.TicketId })
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status2)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Link2)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Memo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Visible)
+                </td>
+                <td>
+                    @Html.ActionLink("削除", "Delete", new { id = item.TicketId })
+                </td>
+            </tr>
+        }
     }
-}
 </table>

@@ -3,7 +3,7 @@
     ViewBag.Title = "Home";
 }
 
-<h2>Home</h2>
+<h2>まいまい</h2>
 
 @foreach (var setting in Model.Settings)
 {
@@ -59,14 +59,19 @@
             {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Category)
+                @foreach (var category in item.Categories)
+                {
+                    <p class="p-category">
+                    @Html.DisplayFor(modelItem => category)
+                    </p>
+                }
             </td>
             <td>
                 <a href="@Html.DisplayFor(modelItem => item.Link)" target="_blank">
                     @Html.DisplayFor(modelItem => item.TracId)
                 </a>
             </td>
-            <td>
+            <td class="td-summary">
                 @Html.ActionLink(item.CsvTicket.Summary?.Substring(0, Math.Min(item.CsvTicket.Summary.Length, 60)), "Edit", new { id = item.TicketId, controller = "Tickets", fromIndex = true })
             </td>
             <td>

@@ -85,27 +85,6 @@ namespace Mymy.Logic
                 using (var sr = new StreamReader(response.GetResponseStream()))
                 {
                     data = ConvertStreamToDataTable(sr);
-                    //// ファイルから一行読み込む
-                    //var line = sr.ReadLine();
-                    //// 読み込んだ一行をカンマ毎に分けて配列に格納する
-                    //var headers = line.Split(',');
-
-                    //foreach (var head in headers)
-                    //{
-                    //    data.Columns.Add(head);
-                    //}
-
-                    //// ストリームの末尾まで繰り返す
-                    //while (!sr.EndOfStream)
-                    //{
-                    //    string[] rows = sr.ReadLine().Split(',');
-                    //    DataRow dr = data.NewRow();
-                    //    for (int i = 0; i < headers.Length; i++)
-                    //    {
-                    //        dr[i] = rows[i];
-                    //    }
-                    //    data.Rows.Add(dr);
-                    //}
                 }
             }
             catch (Exception)

@@ -39,6 +39,8 @@ namespace Mymy.Controllers
                 ticket.Summary = csvTicket.Summary;
                 ticket.CsvTicket = csvTicket;
 
+                //カテゴリのスペース分割
+                ticket.Categories = ticket.Category == null ? new string[0] : ticket.Category.Split(' ');
             }
 
             //グルーピングして渡す

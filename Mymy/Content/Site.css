@@ -28,12 +28,27 @@ textarea{
 }
 
 .form-long {
-    max-width: 600px;
-    width: 600px;
+    max-width: 500px;
+    width: 500px;
 }
 
 @media (min-width: 1686px) {
     .container {
         max-width: 1686px;
     }
+}
+@media (max-width: 975px) {
+    .container {
+        min-width: 975px;
+    }
+    .td-summary{
+        width:290px;
+        height:50px;
+        overflow:hidden;
+        display:block;
+    }
+}
+
+.p-category{
+    margin:0 0 3px;
 }

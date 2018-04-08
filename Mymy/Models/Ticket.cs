@@ -37,12 +37,17 @@ namespace Mymy.Models
 
         public string Link { get; set; }
 
+        //View用
         [NotMapped]
         public virtual CsvTicket CsvTicket { get; set; }
+        [NotMapped]
+        public string[] Categories { get; set; }
         [NotMapped]
         public virtual List<Memo> Memos { get; set; }
         [NotMapped]
         public bool? FromIndex { get; set; }
+        [NotMapped]
+        public string SaveAndStay { get; set; }
 
     }
 

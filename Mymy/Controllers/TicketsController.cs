@@ -19,9 +19,29 @@ namespace Mymy.Controllers
         private MymyContext db = new MymyContext();
 
         // GET: Tickets
-        public ActionResult Index(int? projectId)
+        public ActionResult Index(int? projectId, string category, string summary, OldTicketsView.DisplayEnum? display)
         {
-            return View(db.Tickets.Where(x => x.Project.ProjectId == projectId).ToList());
+            var tickets = db.Tickets.Where(x => x.Project.ProjectId == projectId
+                                             && (string.IsNullOrEmpty(category) || !string.IsNullOrEmpty(category) && x.Category.Contains(category))
+                                             && (string.IsNullOrEmpty(summary) || !string.IsNullOrEmpty(summary) && x.Summary.Contains(summary))
+                                             && (display == null
+                                              || display == OldTicketsView.DisplayEnum.All
+                                              || display == OldTicketsView.DisplayEnum.VisibleOnly && x.Visible
+                                              || display == OldTicketsView.DisplayEnum.InVisibleOnly && !x.Visible)
+                                           ).ToList();
+            foreach (var ticket in tickets)
+            {
+                //カテゴリのスペース分割
+                ticket.Categories = ticket.Category == null ? new string[0] : ticket.Category.Split(' ');
+            }
+
+            var oldTicketsView = new OldTicketsView();
+            oldTicketsView.Tickets = tickets;
+            oldTicketsView.Project = db.Projects.Where(x => x.ProjectId == projectId).FirstOrDefault();
+            oldTicketsView.Category = category;
+            oldTicketsView.Summary = summary;
+
+            return View(oldTicketsView);
         }
 
         // GET: Tickets/Details/5
@@ -76,7 +96,7 @@ namespace Mymy.Controllers
             ticket.DetailMemo = detailMemo;
             ticket.Visible = true;
 
-            ticket.Link = project.ProjectUrl + tracId;
+            ticket.Link = project.ProjectUrl + "ticket/" + tracId;
 
             if (ModelState.IsValid)
             {
@@ -114,7 +134,20 @@ namespace Mymy.Controllers
 
             if (!string.IsNullOrEmpty(ticket.Category))
             {
-                var memos = db.Memos.Where(x => x.Category == ticket.Category).ToList();
+                //カテゴリのスペース分割
+                ticket.Categories = ticket.Category == null ? new string[0] : ticket.Category.Split(' ');
+                var memos = new List<Memo>();
+                foreach (var category in ticket.Categories)
+                {
+                    var memo = db.Memos.Where(x => x.Category == category).ToList();
+                    if (memo != null)
+                    {
+                        foreach (var item in memo)
+                        {
+                            memos.Add(item);
+                        }
+                    }
+                }
                 ticket.Memos = memos;
             }
             else
@@ -130,7 +163,7 @@ namespace Mymy.Controllers
         // 詳細については、https://go.microsoft.com/fwlink/?LinkId=317598 を参照してください。
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "TicketId,TracId,Summary,Category,Status,Status2,Link2,Memo,DetailMemo,Visible,FromIndex")] Ticket ticket)
+        public ActionResult Edit([Bind(Include = "TicketId,TracId,Summary,Category,Status,Status2,Link2,Memo,DetailMemo,Visible,FromIndex,SaveAndStay")] Ticket ticket)
         {
             var project = db.Tickets.FirstOrDefault(x => x.TicketId == ticket.TicketId).Project;
             ticket.Project = project;
@@ -140,6 +173,10 @@ namespace Mymy.Controllers
             {
                 db.Set<Ticket>().AddOrUpdate(ticket);
                 db.SaveChanges();
+                if (!string.IsNullOrEmpty(ticket.SaveAndStay))
+                {
+                    return RedirectToAction("Edit", "Tickets", new { id = ticket.TicketId, fromIndex = ticket.FromIndex });
+                }
                 if (ticket.FromIndex == true)
                 {
                     return RedirectToAction("Index", "Home");

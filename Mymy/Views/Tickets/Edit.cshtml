@@ -4,7 +4,7 @@
     ViewBag.Title = "Edit";
 }
 
-<h2>Edit</h2>
+<h2>チケット編集</h2>
 
 
 @using (Html.BeginForm())
@@ -12,7 +12,6 @@
     @Html.AntiForgeryToken()
     
 <div class="form-horizontal">
-    <h4>Ticket</h4>
     <hr />
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
     @Html.HiddenFor(model => model.TicketId)
@@ -21,8 +20,8 @@
     @Html.HiddenFor(model => model.Summary)
     @Html.HiddenFor(model => model.FromIndex)
 
-    <div>
-        <div style="width:800px; float:left;">
+    <div style="min-width:1400px;">
+        <div style="width:600px; float:left;">
             <div class="form-group">
                 <label class="control-label col-md-2">チケット</label>
                 <div class="col-md-10">
@@ -99,7 +98,8 @@
 
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Save" class="btn btn-default" />
+                    <input type="submit" name="saveandback" value="保存して戻る" class="btn btn-default" />
+                    <input type="submit" name="saveandstay" value="保存して残る" class="btn btn-default" />
                 </div>
             </div>
         </div>
@@ -112,8 +112,7 @@
                 @Html.DisplayFor(model => model.Project.Memo)
             </div>
             <div class="col-md-10">
-                @*@Html.Raw(Html.Encode(Model.Project.DetailMemo).Replace("\n", "<br />"))*@
-                <textarea onClick="this.select();" rows="5" class="form-control text-box multi-line">@Html.DisplayFor(model => model.Project.DetailMemo)</textarea>
+                <textarea onClick="this.select();" rows="3" class="form-control text-box multi-line">@Html.DisplayFor(model => model.Project.DetailMemo)</textarea>
             </div>
             @foreach (var item in Model.Memos)
             {
@@ -121,8 +120,7 @@
                     @Html.DisplayFor(model => item.Title)
                 </div>
                 <div class="col-md-10">
-                    @*@Html.Raw(Html.Encode(item.Content).Replace("\n", "<br />"))*@
-                    <textarea onClick="this.select();" rows="5" class="form-control text-box multi-line">@Html.DisplayFor(model => item.Content)</textarea>
+                    <textarea onClick="this.select();" rows="3" class="form-control text-box multi-line">@Html.DisplayFor(model => item.Content)</textarea>
                 </div>
             }
         </div>
