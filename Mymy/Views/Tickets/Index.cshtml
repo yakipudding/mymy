@@ -39,32 +39,32 @@
 }
 
 <table class="table">
-    <tr>
-        <th>
+    <tr class="home-tr-header">
+        <th class="home-th">
             @Html.DisplayNameFor(model => model.Tickets.FirstOrDefault().Category)
         </th>
-        <th>
+        <th class="home-th">
             @Html.DisplayNameFor(model => model.Tickets.FirstOrDefault().TracId)
         </th>
-        <th>
+        <th class="home-th">
             @Html.DisplayNameFor(model => model.Tickets.FirstOrDefault().Summary)
         </th>
-        <th>
+        <th class="home-th">
             @Html.DisplayNameFor(model => model.Tickets.FirstOrDefault().Status)
         </th>
-        <th>
+        <th class="home-th">
             @Html.DisplayNameFor(model => model.Tickets.FirstOrDefault().Status2)
         </th>
-        <th>
+        <th class="home-th">
             @Html.DisplayNameFor(model => model.Tickets.FirstOrDefault().Link2)
         </th>
-        <th>
+        <th class="home-th">
             @Html.DisplayNameFor(model => model.Tickets.FirstOrDefault().Memo)
         </th>
-        <th>
+        <th class="home-th">
             @Html.DisplayNameFor(model => model.Tickets.FirstOrDefault().Visible)
         </th>
-        <th></th>
+        <th class="home-th"></th>
     </tr>
     @if (Model.Tickets.Any())
     {
@@ -84,8 +84,10 @@
                         @Html.DisplayFor(modelItem => item.TracId)
                     </a>
                 </td>
-                <td class="td-summary">
-                    @Html.ActionLink(item.Summary?.Substring(0, Math.Min(item.Summary.Length, 50)) ?? "Edit", "Edit", new { id = item.TicketId })
+                <td>
+                    <div class="td-summary">
+                        @Html.ActionLink(item.Summary?.Substring(0, Math.Min(item.Summary.Length, 50)) ?? "Edit", "Edit", new { id = item.TicketId })
+                    </div>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Status)

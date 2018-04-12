@@ -3,7 +3,7 @@
     ViewBag.Title = "Home";
 }
 
-<h2>まいまい</h2>
+<h2></h2>
 
 @foreach (var setting in Model.Settings)
 {
@@ -15,41 +15,42 @@
 
 @foreach (var projectTicket in Model.Projects)
 {
-<h4>
-    @Html.ActionLink(projectTicket.ProjectName, "Edit", new { id = projectTicket.ProjectId, controller = "Projects" })
+<h4 class="home-h4-project">
+    @Html.ActionLink(projectTicket.ProjectName, "Edit", new { id = projectTicket.ProjectId, controller = "Projects" }, new {@class = "home-a-project" })
+    <div id="home-h4-link" style="float:right; margin-right:20px;">
+        <a href='@Url.Action("Create", "Tickets", new { projectId = projectTicket.ProjectId })'><img src='@Url.Content("~/Images/icon-plus.png")' /></a>
 
-    @Html.ActionLink("[新規チケット登録]", "Create", new { projectId = projectTicket.ProjectId, controller = "Tickets" })
-
-    @Html.ActionLink("[過去チケット]", "Index", new { projectId = projectTicket.ProjectId, controller = "Tickets" })
+        <a href='@Url.Action("Index", "Tickets", new { projectId = projectTicket.ProjectId })'><img src='@Url.Content("~/Images/icon-list.png")' /></a>
+    </div>
 </h4>
 
     <table class="table">
-        <tr>
-            <th>
+        <tr class="home-tr-header">
+            <th class="home-th">
                 @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().Category)
             </th>
-            <th>
+            <th class="home-th">
                 @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().TracId)
             </th>
-            <th>
+            <th class="home-th">
                 @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().CsvTicket.Summary)
             </th>
-            <th>
+            <th class="home-th">
                 @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().Status)
             </th>
-            <th>
+            <th class="home-th">
                 @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().Memo)
             </th>
-            <th>
+            <th class="home-th">
                 @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().Link2)
             </th>
             @foreach (var customField in projectTicket.ProjectCustomFields)
-    {
-        <th>
-            @Html.DisplayFor(modelItem => customField.FieldJapaneseName)
-        </th>
-}
-            <th>
+            {
+                <th class="home-th">
+                @Html.DisplayFor(modelItem => customField.FieldJapaneseName)
+                </th>
+            }
+            <th class="home-th">
                 @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().CsvTicket.DueClose)
             </th>
         </tr>
@@ -71,8 +72,10 @@
                     @Html.DisplayFor(modelItem => item.TracId)
                 </a>
             </td>
-            <td class="td-summary">
-                @Html.ActionLink(item.CsvTicket.Summary?.Substring(0, Math.Min(item.CsvTicket.Summary.Length, 60)), "Edit", new { id = item.TicketId, controller = "Tickets", fromIndex = true })
+            <td>
+                <div class="td-summary">
+                    @Html.ActionLink(item.CsvTicket.Summary?.Substring(0, Math.Min(item.CsvTicket.Summary.Length, 60)), "Edit", new { id = item.TicketId, controller = "Tickets", fromIndex = true })
+                </div>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Status)

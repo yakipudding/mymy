@@ -4,26 +4,26 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2>メモ一覧</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("[メモ新規作成]", "Create")
 </p>
 <table class="table">
-    <tr>
-        <th>
+    <tr class="home-tr-header">
+        <th class="home-th">
             @Html.DisplayNameFor(model => model.ProjectId)
         </th>
-        <th>
+        <th class="home-th">
             @Html.DisplayNameFor(model => model.Category)
         </th>
-        <th>
+        <th class="home-th">
             @Html.DisplayNameFor(model => model.Title)
         </th>
-        <th>
+        <th class="home-th">
             @Html.DisplayNameFor(model => model.Content)
         </th>
-        <th></th>
+        <th class="home-th"></th>
     </tr>
 
 @foreach (var item in Model) {
