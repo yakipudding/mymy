@@ -53,6 +53,7 @@
             <th class="home-th">
                 @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().CsvTicket.DueClose)
             </th>
+            <th></th>
         </tr>
         @if (projectTicket.Tickets.Any())
         {
@@ -87,13 +88,16 @@
                 @Html.DisplayFor(modelItem => item.Link2)
             </td>
             @foreach (var customFieldItem in item.CsvTicket.CsvTicketCustoms)
-    {
-        <td>
-            @Html.DisplayFor(modelItem => customFieldItem.FieldValue)
-        </td>
-}
+            {
+                <td>
+                    @Html.DisplayFor(modelItem => customFieldItem.FieldValue)
+                </td>
+            }
             <td>
                 @Html.DisplayFor(modelItem => item.CsvTicket.DueClose)
+            </td>
+            <td>
+                @Html.ActionLink("x", "InVisible", new { id = item.TicketId})
             </td>
         </tr>
             }

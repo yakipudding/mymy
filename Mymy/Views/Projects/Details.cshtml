@@ -4,11 +4,9 @@
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
+<h2>プロジェクトカスタム項目一覧</h2>
 
 <div>
-    <h4>Project</h4>
-    <hr />
     <dl class="dl-horizontal">
         <dt>
             @Html.DisplayNameFor(model => model.ProjectName)
@@ -62,20 +60,20 @@
 </div>
 
 <p>
-    @Html.ActionLink("Create New", "Create", new { projectid = Model.ProjectId, controller = "ProjectCustomFields" })
+    @Html.ActionLink("[新規カスタム項目追加]", "Create", new { projectid = Model.ProjectId, controller = "ProjectCustomFields" })
 </p>
 <table class="table">
-    <tr>
-        <th>
+    <tr class="home-tr-header">
+        <th class="home-th">
             @Html.DisplayNameFor(model => model.ProjectCustomFields.First().Field)
         </th>
-        <th>
+        <th class="home-th">
             @Html.DisplayNameFor(model => model.ProjectCustomFields.First().FieldJapaneseName)
         </th>
-        <th>
+        <th class="home-th">
             @Html.DisplayNameFor(model => model.ProjectCustomFields.First().Visible)
         </th>
-        <th></th>
+        <th class="home-th"></th>
     </tr>
 
     @foreach (var item in Model.ProjectCustomFields)
@@ -91,8 +89,8 @@
                 @Html.DisplayFor(modelItem => item.Visible)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.ProjectCustomFieldId }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.ProjectCustomFieldId })
+                @Html.ActionLink("[編集]", "Edit", new { id = item.ProjectCustomFieldId, controller = "ProjectCustomFields" }) |
+                @Html.ActionLink("[削除]", "Delete", new { id = item.ProjectCustomFieldId, controller = "ProjectCustomFields" })
             </td>
         </tr>
     }
@@ -100,6 +98,6 @@
 </table>
 
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.ProjectId }) |
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("[プロジェクト編集]", "Edit", new { id = Model.ProjectId }) |
+    @Html.ActionLink("[プロジェクト一覧へ戻る]", "Index")
 </p>

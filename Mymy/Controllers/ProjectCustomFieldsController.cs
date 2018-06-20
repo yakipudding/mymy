@@ -29,7 +29,7 @@ namespace Mymy.Controllers
         // 詳細については、https://go.microsoft.com/fwlink/?LinkId=317598 を参照してください。
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(int projectId, string Field, string FieldJapaneseName, bool Visible)
+        public ActionResult Create(int projectId, string field, string fieldJapaneseName, bool visible)
         {
             var projectCustomField = new ProjectCustomField();
 
@@ -37,9 +37,12 @@ namespace Mymy.Controllers
             {
                 var project = db.Projects.FirstOrDefault(x => x.ProjectId == projectId);
                 projectCustomField.Project = project;
+                projectCustomField.Field = field;
+                projectCustomField.FieldJapaneseName = fieldJapaneseName;
+                projectCustomField.Visible = visible;
                 db.ProjectCustomFields.Add(projectCustomField);
                 db.SaveChanges();
-                return RedirectToAction("Detail", new { id = projectId, Controller="Project" });
+                return RedirectToAction("Details", new { id = projectId, Controller="Projects" });
             }
 
             return View(projectCustomField);
@@ -71,7 +74,11 @@ namespace Mymy.Controllers
             {
                 db.Entry(projectCustomField).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+
+                int projectId = db.ProjectCustomFields.Where(x => x.ProjectCustomFieldId == projectCustomField.ProjectCustomFieldId)
+                                                      .Select(x => x.Project.ProjectId)
+                                                      .FirstOrDefault();
+                return RedirectToAction("Details", new { id = projectId, Controller = "Projects" });
             }
             return View(projectCustomField);
         }
@@ -99,7 +106,11 @@ namespace Mymy.Controllers
             ProjectCustomField projectCustomField = db.ProjectCustomFields.Find(id);
             db.ProjectCustomFields.Remove(projectCustomField);
             db.SaveChanges();
-            return RedirectToAction("Index");
+
+            int projectId = db.ProjectCustomFields.Where(x => x.ProjectCustomFieldId == projectCustomField.ProjectCustomFieldId)
+                                                  .Select(x => x.Project.ProjectId)
+                                                  .FirstOrDefault();
+            return RedirectToAction("Details", new { id = projectId, Controller = "Projects" });
         }
 
         protected override void Dispose(bool disposing)

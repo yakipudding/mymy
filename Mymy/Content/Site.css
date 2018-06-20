@@ -2,6 +2,7 @@
     --theme-color: #d25151;
     --header-color: #f78282;
     --header-bg-color: rgba(250,196,196,50%);
+    --header-bg-color-even: rgba(250,196,196,40%);
     --logo-color: #555555;
     --link-color: #d25151;
     --link-hover-color: #a95454;
@@ -45,6 +46,11 @@ textarea{
 .form-long {
     max-width: 500px;
     width: 500px;
+}
+
+.form-long2 {
+    max-width: 1000px;
+    width: 1000px;
 }
 
 @media (min-width: 1686px) {
@@ -107,6 +113,10 @@ a.home-a-project:active {
 .home-tr-header {
     background-color: var(--header-bg-color);
 }
+tr:nth-child(even) { /* 偶数番目の指定*/
+    background-color: var(--header-bg-color-even);
+}
+
 th.home-th {
     border-top: 0px solid #ffffff;
     color: var(--header-color);

@@ -14,6 +14,7 @@
         <th class="home-th">
             @Html.DisplayNameFor(model => model.ProjectName)
         </th>
+        <th class="home-th"></th>
         <th class="home-th">
             @Html.DisplayNameFor(model => model.ProjectUrl)
         </th>
@@ -27,7 +28,11 @@
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.ProjectName)
+            @*@Html.DisplayFor(modelItem => item.ProjectName)*@
+            @Html.ActionLink(item.ProjectName, "Edit", new { id = item.ProjectId })
+        </td>
+        <td>
+            @Html.ActionLink("[カスタム項目編集]", "Details", new { id = item.ProjectId })
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.ProjectUrl)
@@ -41,9 +46,7 @@
             @Html.ActionLink("[過去チケット]", "Index", new { projectId = item.ProjectId, controller = "Tickets" })
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.ProjectId }) |
-            @Html.ActionLink("Details", "Details", new { id=item.ProjectId }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.ProjectId })
+            @Html.ActionLink("[削除]", "Delete", new { id=item.ProjectId })
         </td>
     </tr>
 }
