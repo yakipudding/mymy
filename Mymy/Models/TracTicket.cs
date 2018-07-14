@@ -9,7 +9,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Mymy.Models
 {
     [NotMapped]
-    public class CsvTicket
+    public class TracTicket
     {
         [DisplayName("プロジェクトID")]
         public int ProjectId { get; set; }
@@ -47,7 +47,7 @@ namespace Mymy.Models
         [DisplayName("期日")]
         public string DueClose { get; set; }        
 
-        public List<CsvTicketCustom> CsvTicketCustoms { get; set; }
+        public List<TracTicketCustom> TracTicketCustoms { get; set; }
     }
 
 }

@@ -33,7 +33,7 @@
                 @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().TracId)
             </th>
             <th class="home-th">
-                @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().CsvTicket.Summary)
+                @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().TracTicket.Summary)
             </th>
             <th class="home-th">
                 @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().Status)
@@ -51,7 +51,7 @@
                 </th>
             }
             <th class="home-th">
-                @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().CsvTicket.DueClose)
+                @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Tickets.FirstOrDefault().TracTicket.DueClose)
             </th>
             <th></th>
         </tr>
@@ -75,7 +75,7 @@
             </td>
             <td>
                 <div class="td-summary">
-                    @Html.ActionLink(item.CsvTicket.Summary?.Substring(0, Math.Min(item.CsvTicket.Summary.Length, 60)), "Edit", new { id = item.TicketId, controller = "Tickets", fromIndex = true })
+                    @Html.ActionLink(item.TracTicket.Summary?.Substring(0, Math.Min(item.TracTicket.Summary.Length, 60)), "Edit", new { id = item.TicketId, controller = "Tickets", fromIndex = true })
                 </div>
             </td>
             <td>
@@ -87,14 +87,14 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Link2)
             </td>
-            @foreach (var customFieldItem in item.CsvTicket.CsvTicketCustoms)
+            @foreach (var customFieldItem in item.TracTicket.TracTicketCustoms)
             {
                 <td>
                     @Html.DisplayFor(modelItem => customFieldItem.FieldValue)
                 </td>
             }
             <td>
-                @Html.DisplayFor(modelItem => item.CsvTicket.DueClose)
+                @Html.DisplayFor(modelItem => item.TracTicket.DueClose)
             </td>
             <td>
                 @Html.ActionLink("x", "InVisible", new { id = item.TicketId})

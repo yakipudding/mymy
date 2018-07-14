@@ -39,7 +39,7 @@ namespace Mymy.Models
 
         //View用
         [NotMapped]
-        public virtual CsvTicket CsvTicket { get; set; }
+        public virtual TracTicket TracTicket { get; set; }
         [NotMapped]
         public string[] Categories { get; set; }
         [NotMapped]

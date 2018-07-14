@@ -154,20 +154,22 @@
     <Compile Include="Controllers\ProjectsController.cs" />
     <Compile Include="Controllers\SettingsController.cs" />
     <Compile Include="Controllers\TicketsController.cs" />
+    <Compile Include="Data\Common.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Logic\GetTicketsLogic.cs" />
+    <Compile Include="Logic\CommonLogic.cs" />
+    <Compile Include="Logic\TicketLogic.cs" />
     <Compile Include="Migrations\201803111411104_InitialCreate.cs" />
     <Compile Include="Migrations\201803111411104_InitialCreate.Designer.cs">
       <DependentUpon>201803111411104_InitialCreate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\CsvTicketCustom.cs" />
+    <Compile Include="Models\TracTicketCustom.cs" />
     <Compile Include="Models\Memo.cs" />
     <Compile Include="Models\ProjectCustomField.cs" />
     <Compile Include="Models\Project.cs" />
-    <Compile Include="Models\CsvTicket.cs" />
+    <Compile Include="Models\TracTicket.cs" />
     <Compile Include="ViewModels\HomeView.cs" />
     <Compile Include="Models\Setting.cs" />
     <Compile Include="Models\Ticket.cs" />

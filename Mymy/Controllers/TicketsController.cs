@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using Mymy.DAL;
 using Mymy.Logic;
 using Mymy.Models;
+using Mymy.Data;
 using System.Data.Entity.Migrations;
 using System.Configuration;
 
@@ -122,12 +123,11 @@ namespace Mymy.Controllers
             }
             //CSV取得
             var project = db.Projects.FirstOrDefault(x => x.ProjectId == ticket.Project.ProjectId);
-
-            bool isUseTrac = ConfigurationManager.AppSettings["IsUseTrac"] == "true";
-            if (isUseTrac)
+            
+            if (Common.DebugMode == Common.DebugModeEnum.Trac)
             {
-                var csvTicket = GetTicketsLogic.GetCsvTicketFromTicket(ticket, project, project.ProjectCustomFields.ToList());
-                ticket.CsvTicket = csvTicket;
+                var csvTicket = new TicketLogic().GetTracTicketById(project, ticket.TracId, project.ProjectCustomFields.ToList());
+                ticket.TracTicket = csvTicket;
                 ticket.Summary = csvTicket.Summary;
             }
             ticket.FromIndex = fromIndex;

@@ -19,8 +19,8 @@ namespace Mymy.Controllers
             var projects = db.Projects.ToList();
             var settings = db.Settings.ToList();
 
-            //RSS・DBからチケット取得
-            var getTickets = new GetTicketsLogic(projects);
+            //Trac・DBからチケット取得
+            var getTickets = new TicketLogic().GetTickets(projects);
 
             //未登録チケットがある場合は登録
             if (getTickets.NewTickets.Any())
@@ -31,14 +31,14 @@ namespace Mymy.Controllers
                 }
             }
 
-            //DBから再取得してCsvTicketと結合
+            //DBから再取得してTracTicketと結合
             var tickets = db.Tickets.Where(x => x.Visible).ToList();
             foreach (var ticket in tickets)
             {
-                var csvTicket = getTickets.CsvTickets.FirstOrDefault(x => x.ProjectId == ticket.Project.ProjectId
+                var csvTicket = getTickets.TracTickets.FirstOrDefault(x => x.ProjectId == ticket.Project.ProjectId
                                                                        && x.TracId == ticket.TracId);
                 ticket.Summary = csvTicket.Summary;
-                ticket.CsvTicket = csvTicket;
+                ticket.TracTicket = csvTicket;
 
                 //カテゴリのスペース分割
                 ticket.Categories = ticket.Category == null ? new string[0] : ticket.Category.Split(' ');

@@ -9,7 +9,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Mymy.Models
 {
     [NotMapped]
-    public class CsvTicketCustom
+    public class TracTicketCustom
     {
         [DisplayName("プロジェクトID")]
         public int ProjectId { get; set; }
