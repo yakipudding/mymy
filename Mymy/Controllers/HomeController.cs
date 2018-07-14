@@ -20,18 +20,19 @@ namespace Mymy.Controllers
             var settings = db.Settings.ToList();
 
             //Trac・DBからチケット取得
-            var getTickets = new TicketLogic().GetTickets(projects);
+            var homeView = new HomeView();
+            var newTickets = new List<Ticket>();
+            new TicketLogic().GetTickets(projects, homeView, newTickets);
 
             //未登録チケットがある場合は登録
-            if (getTickets.NewTickets.Any())
+            if (newTickets.Any())
             {
-                foreach (var newTicket in getTickets.NewTickets)
+                foreach (var newTicket in newTickets)
                 {
                     CreateFromIndex(newTicket);
                 }
             }
             
-            var homeView = getTickets.HomeView;
             homeView.Settings = settings;
 
             return View(homeView);
@@ -56,7 +57,7 @@ namespace Mymy.Controllers
 
         private void CreateFromIndex(Ticket ticket)
         {
-            //RSSから取得時にDBにないものは登録
+            //Trac取得時にDBにないものは登録
             db.Tickets.Add(ticket);
             db.SaveChanges();
         }

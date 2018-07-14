@@ -3,12 +3,40 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Web;
 
 namespace Mymy.Logic
 {
     public class CommonLogic
     {
+        /// <summary>
+        /// HttpRequestを発行して取得した情報をDataTableに変換します
+        /// </summary>
+        /// <param name="url">HttpRequestUrl</param>
+        /// <returns></returns>
+        public static DataTable GetResponseFromHttpRequest(string url)
+        {
+            var data = new DataTable();
+
+            try
+            {
+                var request = HttpWebRequest.Create(url);
+                request.Method = "GET";
+                var response = (HttpWebResponse)request.GetResponse();
+                using (var sr = new StreamReader(response.GetResponseStream()))
+                {
+                    data = ConvertStreamToDataTable(sr);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return data;
+        }
+
         /// <summary>
         /// StreamからDataTableに変換します
         /// </summary>

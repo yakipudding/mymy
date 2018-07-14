@@ -15,15 +15,6 @@ namespace Mymy.Logic
     public class TicketLogic
     {
         /// <summary>
-        /// 戻り値用
-        /// </summary>
-        public class TicketForHomeDto
-        {
-            public HomeView HomeView = new HomeView();
-            public List<Ticket> NewTickets = new List<Ticket>();
-        }
-
-        /// <summary>
         /// コンストラクタ
         /// </summary>
         public TicketLogic()
@@ -35,12 +26,10 @@ namespace Mymy.Logic
         /// チケット取得
         /// </summary>
         /// <param name="dbProjects"></param>
-        public TicketForHomeDto GetTickets(List<Project> dbProjects)
+        public void GetTickets(List<Project> dbProjects, HomeView homeView, List<Ticket> newTickets)
         {
-            //最終的に返すチケット
-            var retDto = new TicketForHomeDto();
-            retDto.HomeView.Projects = new List<Project>();
-            var newTickets = retDto.NewTickets;
+            //Projectsの初期化
+            homeView.Projects = new List<Project>();
 
             //Projectごとに取りに行く
             foreach (var project in dbProjects)
@@ -52,7 +41,7 @@ namespace Mymy.Logic
                 //プロジェクトのカスタムフィールド
                 var dbProjectCustomFields = project.ProjectCustomFields.Where(x => x.Visible).ToList();
 
-                //Tracクエリから初期表示チケットを取得する -> returnTicketsに追加
+                //Tracクエリから初期表示チケットを取得する -> retTicketsに追加
                 if (project.Condition != null)
                 {
                     GetTracTicketsOnLoad(project, dbProjectTickets, dbProjectCustomFields, retTickets, newTickets);
@@ -77,12 +66,11 @@ namespace Mymy.Logic
                     retProject.ProjectName = project.ProjectName;
                     retProject.ProjectCustomFields = project.ProjectCustomFields;
                     retProject.Tickets = retTickets.Where(x => x.Visible == true).ToList();
-                    retDto.HomeView.Projects.Add(retProject);
+                    homeView.Projects.Add(retProject);
                 }
 
             }
-
-            return retDto;
+            
         }
 
         /// <summary>
@@ -92,13 +80,13 @@ namespace Mymy.Logic
         /// <param name="tracId"></param>
         /// <param name="dbProjectCustomFields"></param>
         /// <returns></returns>
-        public void GetTracTicketsOnLoad(Project project, List<Ticket> dbProjectTickets, List<ProjectCustomField> dbProjectCustomFields, List<Ticket> retTickets, List<Ticket> newTickets)
+        private void GetTracTicketsOnLoad(Project project, List<Ticket> dbProjectTickets, List<ProjectCustomField> dbProjectCustomFields, List<Ticket> retTickets, List<Ticket> newTickets)
         {
             var data = new DataTable();
             switch (Common.DebugMode)
             {
                 case Common.DebugModeEnum.Trac:
-                        data = GetTicketsDataTableFromTrac((CreateFirstTracQueryUrl(project)));
+                        data = CommonLogic.GetResponseFromHttpRequest((CreateFirstTracQueryUrl(project)));
                     break;
                 case Common.DebugModeEnum.LocalCsv:
                     data = GetTicketsFromLocalCsv(project);
@@ -122,7 +110,7 @@ namespace Mymy.Logic
             switch (Common.DebugMode)
             {
                 case Common.DebugModeEnum.Trac:
-                    dt = GetTicketsDataTableFromTrac(CreateTracTicketQueryUrl(project, ticket.TracId));
+                    dt = CommonLogic.GetResponseFromHttpRequest(CreateTracTicketQueryUrl(project, ticket.TracId));
                     break;
                 case Common.DebugModeEnum.LocalCsv:
                     dt = GetTicketDataTableFromLocalCsv(project, ticket.TracId);
@@ -133,33 +121,6 @@ namespace Mymy.Logic
         }
 
         #region Trac接続
-
-        /// <summary>
-        /// Tracクエリで取得した情報をDataTableに変換します
-        /// </summary>
-        /// <param name="queryUrl">クエリURL</param>
-        /// <returns></returns>
-        private DataTable GetTicketsDataTableFromTrac(string queryUrl)
-        {
-            var data = new DataTable();
-
-            try
-            {
-                var request = HttpWebRequest.Create(queryUrl);
-                request.Method = "GET";
-                var response = (HttpWebResponse)request.GetResponse();
-                using (var sr = new StreamReader(response.GetResponseStream()))
-                {
-                    data = CommonLogic.ConvertStreamToDataTable(sr);
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-
-            return data;
-        }
 
         /// <summary>
         /// Tracから取得したDataTable型のチケットを変換し、returnTicket.TracTicketsリストに追加します
