@@ -34,8 +34,47 @@ namespace Mymy.Models
         public string DetailMemo { get; set; }
         [DisplayName("表示")]
         public bool Visible { get; set; }
-
+        [DisplayName("リンク")]
         public string Link { get; set; }
+
+        //Trac取得
+        [NotMapped]
+        [DisplayName("作成者")]
+        public string Reporter { get; set; }
+        [NotMapped]
+        [DisplayName("担当者")]
+        public string Owner { get; set; }
+        [NotMapped]
+        [DisplayName("詳細")]
+        public string Description { get; set; }
+        [NotMapped]
+        [DisplayName("分類")]
+        public string Type { get; set; }
+        [NotMapped]
+        [DisplayName("重要度")]
+        public string Proprity { get; set; }
+        [NotMapped]
+        [DisplayName("製品")]
+        public string Component { get; set; }
+        [NotMapped]
+        [DisplayName("キーワード")]
+        public string Keywords { get; set; }
+        [NotMapped]
+        [DisplayName("cc")]
+        public string Cc { get; set; }
+        [NotMapped]
+        [DisplayName("作成日")]
+        [DisplayFormat(DataFormatString = "{0:MM/dd}")]
+        public DateTime? CreateDate { get; set; }
+        [NotMapped]
+        [DisplayName("更新日")]
+        [DisplayFormat(DataFormatString = "{0:MM/dd hh:mm}")]
+        public DateTime? UpdateDate { get; set; }
+        [NotMapped]
+        [DisplayName("期日")]
+        public string DueClose { get; set; }
+        [NotMapped]
+        public List<TracTicketCustom> TracTicketCustoms { get; set; }
 
         //View用
         [NotMapped]

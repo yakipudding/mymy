@@ -30,37 +30,9 @@ namespace Mymy.Controllers
                     CreateFromIndex(newTicket);
                 }
             }
-
-            //DBから再取得してTracTicketと結合
-            var tickets = db.Tickets.Where(x => x.Visible).ToList();
-            foreach (var ticket in tickets)
-            {
-                var csvTicket = getTickets.TracTickets.FirstOrDefault(x => x.ProjectId == ticket.Project.ProjectId
-                                                                       && x.TracId == ticket.TracId);
-                ticket.Summary = csvTicket.Summary;
-                ticket.TracTicket = csvTicket;
-
-                //カテゴリのスペース分割
-                ticket.Categories = ticket.Category == null ? new string[0] : ticket.Category.Split(' ');
-            }
-
-            //グルーピングして渡す
-            var groupTickets = tickets.GroupBy(x => x.Project.ProjectId);
-            var homeView = new HomeView();
-            var homeViewProjects = new List<Project>();
+            
+            var homeView = getTickets.HomeView;
             homeView.Settings = settings;
-
-            foreach (var groupTicket in groupTickets)
-            {
-                var project = new Project();
-                project = projects.FirstOrDefault(x => x.ProjectId == groupTicket.Key);
-                var projectTickets = new List<Ticket>();
-                projectTickets = groupTicket.ToList();
-                project.Tickets = projectTickets;
-
-                homeViewProjects.Add(project);           
-            }
-            homeView.Projects = homeViewProjects;
 
             return View(homeView);
         }

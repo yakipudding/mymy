@@ -17,9 +17,9 @@ namespace Mymy.Logic
         /// <summary>
         /// 戻り値用
         /// </summary>
-        public class Tickets
+        public class TicketForHomeDto
         {
-            public List<TracTicket> TracTickets = new List<TracTicket>();
+            public HomeView HomeView = new HomeView();
             public List<Ticket> NewTickets = new List<Ticket>();
         }
 
@@ -35,14 +35,18 @@ namespace Mymy.Logic
         /// チケット取得
         /// </summary>
         /// <param name="dbProjects"></param>
-        public Tickets GetTickets(List<Project> dbProjects)
+        public TicketForHomeDto GetTickets(List<Project> dbProjects)
         {
             //最終的に返すチケット
-            var returnTickets = new Tickets();
+            var retDto = new TicketForHomeDto();
+            retDto.HomeView.Projects = new List<Project>();
+            var newTickets = retDto.NewTickets;
 
             //Projectごとに取りに行く
             foreach (var project in dbProjects)
             {
+                var retTickets = new List<Ticket>();
+
                 //DB登録済みのチケット
                 var dbProjectTickets = project.Tickets.Where(x => x.Project.ProjectId == project.ProjectId).ToList();
                 //プロジェクトのカスタムフィールド
@@ -51,22 +55,34 @@ namespace Mymy.Logic
                 //Tracクエリから初期表示チケットを取得する -> returnTicketsに追加
                 if (project.Condition != null)
                 {
-                    GetTracTicketsOnLoad(project, dbProjectTickets, dbProjectCustomFields, returnTickets);
+                    GetTracTicketsOnLoad(project, dbProjectTickets, dbProjectCustomFields, retTickets, newTickets);
                 }
                 
                 //Tracで取得したチケットID
-                List<int> ticketIds = returnTickets.TracTickets.Where(x => x.ProjectId == project.ProjectId).Select(x => x.TracId).ToList();
+                List<int> ticketIds = retTickets.Where(x => x.Project.ProjectId == project.ProjectId).Select(x => x.TracId).ToList();
 
                 //DBに登録されているチケットのうち、Tracで取得できなかったチケット取得
                 foreach (var dbOnlyTicket in dbProjectTickets.FindAll(x => x.Visible && !ticketIds.Contains(x.TracId)))
                 {
                     //Tracから最新情報取得
-                    var ticket = GetTracTicketById(project, dbOnlyTicket.TracId, dbProjectCustomFields);
-                    returnTickets.TracTickets.Add(ticket);
+                    GetTracTicketById(project, dbOnlyTicket, dbProjectCustomFields);
+                    retTickets.Add(dbOnlyTicket);
                 }
+
+                if (retTickets.Any())
+                {
+                    //HomeView追加
+                    var retProject = new Project();
+                    retProject.ProjectId = project.ProjectId;
+                    retProject.ProjectName = project.ProjectName;
+                    retProject.ProjectCustomFields = project.ProjectCustomFields;
+                    retProject.Tickets = retTickets.Where(x => x.Visible == true).ToList();
+                    retDto.HomeView.Projects.Add(retProject);
+                }
+
             }
 
-            return returnTickets;
+            return retDto;
         }
 
         /// <summary>
@@ -76,7 +92,7 @@ namespace Mymy.Logic
         /// <param name="tracId"></param>
         /// <param name="dbProjectCustomFields"></param>
         /// <returns></returns>
-        public void GetTracTicketsOnLoad(Project project, List<Ticket> dbProjectTickets, List<ProjectCustomField> dbProjectCustomFields, Tickets returnTickets)
+        public void GetTracTicketsOnLoad(Project project, List<Ticket> dbProjectTickets, List<ProjectCustomField> dbProjectCustomFields, List<Ticket> retTickets, List<Ticket> newTickets)
         {
             var data = new DataTable();
             switch (Common.DebugMode)
@@ -85,11 +101,11 @@ namespace Mymy.Logic
                         data = GetTicketsDataTableFromTrac((CreateFirstTracQueryUrl(project)));
                     break;
                 case Common.DebugModeEnum.LocalCsv:
-                    data = GetTicketsFromLocalCsv(project, returnTickets);
+                    data = GetTicketsFromLocalCsv(project);
                     break;
             }
             
-            ConvertDataTableToTickets(project, data, dbProjectTickets, dbProjectCustomFields, returnTickets);            
+            ConvertDataTableToTickets(project, data, dbProjectTickets, dbProjectCustomFields, retTickets, newTickets);            
         }
 
         /// <summary>
@@ -99,21 +115,21 @@ namespace Mymy.Logic
         /// <param name="tracId"></param>
         /// <param name="dbProjectCustomFields"></param>
         /// <returns></returns>
-        public TracTicket GetTracTicketById(Project project, int tracId, List<ProjectCustomField> dbProjectCustomFields)
+        public Ticket GetTracTicketById(Project project, Ticket ticket, List<ProjectCustomField> dbProjectCustomFields)
         {
             var dt = new DataTable();
             //最新情報取得
             switch (Common.DebugMode)
             {
                 case Common.DebugModeEnum.Trac:
-                    dt = GetTicketsDataTableFromTrac(CreateTracTicketQueryUrl(project, tracId));
+                    dt = GetTicketsDataTableFromTrac(CreateTracTicketQueryUrl(project, ticket.TracId));
                     break;
                 case Common.DebugModeEnum.LocalCsv:
-                    dt = GetTicketDataTableFromLocalCsv(project, tracId);
+                    dt = GetTicketDataTableFromLocalCsv(project, ticket.TracId);
                     break;
             }
 
-            return ConvertRowToTracTicket(dt.Rows[0], project.ProjectId, dbProjectCustomFields);
+            return ConvertRowToTicket(dt.Rows[0], project,ticket, dbProjectCustomFields);
         }
 
         #region Trac接続
@@ -150,31 +166,55 @@ namespace Mymy.Logic
         /// </summary>
         /// <param name="projectId"></param>
         /// <param name="xml"></param>
-        private Tickets ConvertDataTableToTickets(Project project, DataTable data, List<Ticket> dbProjectTicket, List<ProjectCustomField> dbProjectCustomFields, Tickets returnTickets)
+        private void ConvertDataTableToTickets(Project project, DataTable data, List<Ticket> dbProjectTicket, List<ProjectCustomField> dbProjectCustomFields, List<Ticket> retTickets, List<Ticket> newTickets)
         {
             foreach (DataRow row in data.Rows)
             {
-                //DataRowからTracチケットに変換
-                var tracTicket = ConvertRowToTracTicket(row, project.ProjectId, dbProjectCustomFields);
-                returnTickets.TracTickets.Add(tracTicket);
+                //チケット取得
+                var tracTicket = new Ticket();
+                tracTicket.Project = project;
+
+                //DataRowからチケットに変換
+                ConvertRowToTicket(row, project, tracTicket, dbProjectCustomFields);
+                retTickets.Add(tracTicket);
                 
                 //DBに登録済みかどうか確認
                 var dbTicket = dbProjectTicket?.FirstOrDefault(x => x.TracId == tracTicket.TracId);
                 if (dbTicket == null)
                 {
-                    var ticket = new Ticket();
-                    ticket.Project = project;
-                    ticket.TracId = tracTicket.TracId;
-                    ticket.Link = project.ProjectUrl + "ticket/" + tracTicket.TracId;
-                    ticket.Visible = true;
-                    ticket.Summary = tracTicket.Summary;
+                    //なければ新規作成
+                    //var newTicket = new Ticket();
+                    //newTicket.Project = project;
+                    //newTicket.TracId = tracTicket.TracId;
+                    tracTicket.Link = project.ProjectUrl + "ticket/" + tracTicket.TracId;
+                    tracTicket.Visible = true;
+                    //newTicket.Summary = tracTicket.Summary;
+                    //カテゴリのスペース分割
+                    tracTicket.Categories = new string[0];
 
                     //DB登録リストに追加
-                    returnTickets.NewTickets.Add(ticket);
+                    newTickets.Add(tracTicket);
+                }
+                else
+                {
+                    //DBに登録済みであればDBチケットをマージ
+                    var ticket = retTickets.Find(x => x.Project.ProjectId == project.ProjectId && x.TracId == tracTicket.TracId);
+                    ticket.TicketId = dbTicket.TicketId;
+                    ticket.Category = dbTicket.Category;
+                    ticket.Status = dbTicket.Status;
+                    ticket.Status2 = dbTicket.Status2;
+                    ticket.Link2 = dbTicket.Link2;
+                    ticket.Memo = dbTicket.Memo;
+                    ticket.DetailMemo = dbTicket.DetailMemo;
+                    ticket.Visible = dbTicket.Visible;
+                    ticket.Link = dbTicket.Link;
+                    //カテゴリのスペース分割
+                    ticket.Categories = ticket.Category == null ? new string[0] : ticket.Category.Split(' ');
+
                 }
             }
 
-            return returnTickets;
+            //return returnTickets;
 
         }
 
@@ -185,9 +225,9 @@ namespace Mymy.Logic
         /// <param name="projectId">プロジェクトID</param>
         /// <param name="dbProjectCustomFields">プロジェクトカスタムフィールド</param>
         /// <returns></returns>
-        private TracTicket ConvertRowToTracTicket(DataRow row, int projectId, List<ProjectCustomField> dbProjectCustomFields)
+        private Ticket ConvertRowToTicket(DataRow row, Project project, Ticket tracTicket,  List<ProjectCustomField> dbProjectCustomFields)
         {
-            var tracTicket = new TracTicket();
+            //var tracTicket = new Ticket();
 
             var tracId = int.Parse(row["id"].ToString());
             var summary = row["summary"].ToString();
@@ -199,7 +239,7 @@ namespace Mymy.Logic
             var dueclosedate_str = row["due_close"].ToString(); //期日
                                                                 //他の項目もあるけど今のところ使わない
 
-            tracTicket.ProjectId = projectId;
+            tracTicket.Project = project;
             tracTicket.TracId = tracId;
             tracTicket.Summary = summary;            
             //tracTicket.Reporter = reporter;
@@ -208,6 +248,8 @@ namespace Mymy.Logic
             tracTicket.UpdateDate = DateTime.Parse(updatedate_str);
             tracTicket.Status = status;
             tracTicket.DueClose = dueclosedate_str;
+            //カテゴリのスペース分割
+            tracTicket.Categories = tracTicket.Category == null ? new string[0] : tracTicket.Category.Split(' ');
 
             //カスタムフィールド分
             tracTicket.TracTicketCustoms = new List<TracTicketCustom>();
@@ -259,15 +301,14 @@ namespace Mymy.Logic
         /// <param name="project"></param>
         /// <param name="returnTickets"></param>
         /// <returns></returns>
-        private DataTable GetTicketsFromLocalCsv(Project project, Tickets returnTickets)
+        private DataTable GetTicketsFromLocalCsv(Project project)
         {
             //ファイルから取得（テスト用）
             var testData = new DataTable();
             var sr = new StreamReader(@"C:\tmp\" + project.ProjectId + @"\test.csv", System.Text.Encoding.GetEncoding("shift_jis"));
             testData = CommonLogic.ConvertStreamToDataTable(sr);
             sr.Dispose();
-
-            //return ConvertDataTableToTickets(project, testData, project.Tickets.ToList(), project.ProjectCustomFields.ToList(), returnTickets);
+            
             return testData;
 
         }

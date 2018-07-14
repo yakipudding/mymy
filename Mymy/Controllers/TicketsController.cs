@@ -126,8 +126,8 @@ namespace Mymy.Controllers
             
             if (Common.DebugMode == Common.DebugModeEnum.Trac)
             {
-                var csvTicket = new TicketLogic().GetTracTicketById(project, ticket.TracId, project.ProjectCustomFields.ToList());
-                ticket.TracTicket = csvTicket;
+                var csvTicket = new TicketLogic().GetTracTicketById(project, ticket, project.ProjectCustomFields.ToList());
+                //ticket.TracTicket = csvTicket;
                 ticket.Summary = csvTicket.Summary;
             }
             ticket.FromIndex = fromIndex;
