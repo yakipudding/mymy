@@ -18,7 +18,7 @@ namespace Mymy.Controllers
         // GET: Projects
         public ActionResult Index()
         {
-            return View(db.Projects.ToList());
+            return View(db.Projects.OrderBy(x => x.OrderIndex).ToList());
         }
 
         // GET: Projects/Details/5
@@ -79,7 +79,7 @@ namespace Mymy.Controllers
         // 詳細については、https://go.microsoft.com/fwlink/?LinkId=317598 を参照してください。
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ProjectId,ProjectName,ProjectUrl,Condition,Column,Memo,DetailMemo")] Project project)
+        public ActionResult Edit([Bind(Include = "ProjectId,ProjectName,ProjectUrl,Condition,Column,Memo,DetailMemo,OrderIndex")] Project project)
         {
             if (ModelState.IsValid)
             {

@@ -24,6 +24,8 @@ namespace Mymy.Models
         [DisplayName("詳細メモ")]
         [DataType(DataType.MultilineText)]
         public string DetailMemo { get; set; }
+        [DisplayName("並び順")]
+        public int OrderIndex { get; set; }
 
         public virtual ICollection<Ticket> Tickets { get; set; }
         public virtual ICollection<ProjectCustomField> ProjectCustomFields { get; set; }

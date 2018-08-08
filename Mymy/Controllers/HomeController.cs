@@ -16,7 +16,7 @@ namespace Mymy.Controllers
 
         public ActionResult Index()
         {
-            var projects = db.Projects.ToList();
+            var projects = db.Projects.OrderBy(x => x.OrderIndex).ToList();
             var settings = db.Settings.ToList();
 
             //Trac・DBからチケット取得
